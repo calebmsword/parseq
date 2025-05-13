@@ -1,22 +1,24 @@
+import {
+  checkRequestors,
+  makeReason,
+} from "../crockford-factories/crockford-factories-utils/misc.js";
 import { isBoolean, isCallable } from "../parseq-utilities/misc.js";
-import { isRequestor, requestor } from "../parseq-utilities/requestor.js";
+import { requestor } from "../parseq-utilities/requestor.js";
+
+const BRANCH = "branch";
 
 export const branch = (condition, ifTrue, ifFalse) => {
   if (!isCallable(condition)) {
-    throw new Error("condition must be a function", { cause: condition });
+    throw makeReason(BRANCH, "condition must be a function", condition);
   }
 
-  [ifTrue, ifFalse].forEach((arg) => {
-    if (!isRequestor(arg)) {
-      throw new Error("ifTrue and ifFalse must be requestors", { cause: arg });
-    }
-  });
+  checkRequestors([ifTrue, ifFalse], BRANCH);
 
   return requestor((pass, fail, message) => {
     const boolean = condition(message);
 
     if (!isBoolean(boolean)) {
-      fail(new Error("condition did not return a boolean", { cause: boolean }));
+      fail(makeReason(BRANCH, "condition did not return a boolean", boolean));
     }
 
     const cancellor = boolean

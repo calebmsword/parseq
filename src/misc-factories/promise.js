@@ -1,9 +1,12 @@
+import { makeReason } from "../crockford-factories/crockford-factories-utils/misc.js";
 import {
   exists,
   isCallable,
   isThenable,
   makePotentialListener,
 } from "../parseq-utilities/misc.js";
+
+const PROMISE = "promise";
 
 const defaultGetCancellor = (abort) => {
   return (reason) => {
@@ -26,23 +29,29 @@ export const promise = (getPromise, spec) => {
   }
 
   let {
-    getsSignal = false,
-    cancellable = true || getsSignal,
+    takesSignal = false,
     getCancellor,
   } = spec;
 
-  if (cancellable !== true && exists(getCancellor)) {
-    throw new Error("do not provide getCancellor when cancellable is not true");
-  } else if (exists(getCancellor) && !isCallable(getCancellor)) {
-    throw new Error("getCancellor must be a cancellor factory", {
-      cause: getCancellor,
-    });
-  } else if (cancellable === true && !exists(getCancellor)) {
+  if (takesSignal !== true && exists(getCancellor)) {
+    throw makeReason(
+      PROMISE,
+      "do not provide getCancellor when getsSignal is not true",
+    );
+  }
+  if (exists(getCancellor) && !isCallable(getCancellor)) {
+    throw makeReason(
+      PROMISE,
+      "getCancellor must be a cancellor factory",
+      getCancellor,
+    );
+  }
+  if (takesSignal === true && !exists(getCancellor)) {
     getCancellor = defaultGetCancellor;
   }
 
   if (!isCallable(getPromise)) {
-    throw new Error("getPromise must be callable", { cause: getPromise });
+    throw makeReason(PROMISE, "getPromise must be callable", getPromise);
   }
 
   return makePotentialListener(getPromise.length > 0, (pass, fail, message) => {
@@ -50,24 +59,23 @@ export const promise = (getPromise, spec) => {
     let signal;
 
     new Promise((resolve, reject) => {
-      if (cancellable === true) {
+      if (takesSignal === true) {
         let abort;
 
-        if (getsSignal === true) {
-          const controller = new AbortController();
-          ({ signal, abort } = controller);
-        } else {
-          abort = reject;
-        }
+        const controller = new AbortController();
+        ({ signal, abort } = controller);
 
         cancellor = getCancellor(abort);
       }
+
       const newPromise = getPromise(message, signal);
 
       if (!isThenable(newPromise)) {
-        throw new Error("getPromise did not return a thenable", {
-          cause: newPromise,
-        });
+        throw makeReason(
+          PROMISE,
+          "getPromise did not return a thenable",
+          newPromise,
+        );
       }
 
       newPromise.then(resolve).catch(reject);

@@ -2,12 +2,10 @@ import { isRequestor } from "../../parseq-utilities/requestor.js";
 import { exists } from "../../parseq-utilities/misc.js";
 
 export const makeReason = (factoryName, excuse, cause) => {
-  const excuseText = !exists(excuse)
-    ? ""
-    : `: ${excuse}`;
+  const excuseText = !exists(excuse) ? "" : `: ${excuse}`;
   return cause !== undefined && cause !== null
-    ? new Error(`parsec.${factoryName}${excuseText}`, { cause })
-    : new Error(`parsec.${factoryName}${excuseText}`);
+    ? new Error(`parseq.${factoryName}${excuseText}`, { cause })
+    : new Error(`parseq.${factoryName}${excuseText}`);
 };
 
 export const checkAction = (action, factoryName) => {

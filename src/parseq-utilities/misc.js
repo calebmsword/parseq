@@ -8,6 +8,10 @@ export const isObject = (value) => {
   return value !== null && typeof value === "object";
 };
 
+export const asObject = (value) => {
+  return isObject(value) ? value : {};
+};
+
 export const isPrimitive = (value) => {
   return value === null || typeof value !== "object";
 };
@@ -34,12 +38,36 @@ export const isScheduler = (value) => {
 };
 
 export const safeCallback = (fail, callback) => {
-  return () => {
+  return (...args) => {
     try {
-      callback();
+      callback(...args);
     } catch (reason) {
       fail(reason);
     }
+  };
+};
+
+export const safeCallbackOneArg = (fail, callback) => {
+  return (arg) => {
+    try {
+      callback(arg);
+    } catch (reason) {
+      fail(reason);
+    }
+  };
+};
+
+export const allTrue = (...funcs) => {
+  return (x) => {
+    return funcs.every((func) => {
+      return func(x);
+    });
+  };
+};
+
+export const not = (func) => {
+  return (x) => {
+    return !func(x);
   };
 };
 

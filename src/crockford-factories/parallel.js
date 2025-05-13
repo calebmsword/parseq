@@ -1,6 +1,5 @@
 import { requestor } from "../parseq-utilities/requestor.js";
 import {
-  __factoryName__,
   allTimeOptions,
   checkRequestors,
   FactoryName,
@@ -38,7 +37,7 @@ export const parallel = (necessetiesOrSpec, spec = {}) => {
     safeRecursionMode,
   } = parallelSpec;
 
-  const factoryName = parallelSpec[__factoryName__] || FactoryName.PARALLEL;
+  const factoryName = parallelSpec.factoryName || FactoryName.PARALLEL;
 
   let { timeOption = TimeOption.SKIP_OPTIONALS_IF_TIME_REMAINS } = spec;
 

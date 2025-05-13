@@ -13,6 +13,6 @@ export const fallback = (requestors, spec = {}) => {
     throttle: 1,
     scheduler,
     safeRecursionMode,
-    [__factoryName__]: FactoryName.FALLBACK
+    factoryName: FactoryName.FALLBACK
   });
 };

@@ -1,3 +1,4 @@
+import { makeReason } from "../crockford-factories/crockford-factories-utils/misc.js";
 import {
   exists,
   isCallable,
@@ -5,11 +6,14 @@ import {
 } from "../parseq-utilities/misc.js";
 import { requestor } from "../parseq-utilities/requestor.js";
 
+const MAKE_FAILURE = "makeFailure";
+
 export const makeFailure = (createReason) => {
   if (!isCallable(createReason)) {
-    throw new Error(
+    throw makeReason(
+      MAKE_FAILURE,
       "Argument to fail must be a function that receives a message and returns a nonnullish value",
-      { cause: createReason },
+      createReason,
     );
   }
 

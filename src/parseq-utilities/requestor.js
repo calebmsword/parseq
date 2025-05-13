@@ -55,6 +55,7 @@ Object.freeze(Requestor.prototype);
 
 const getTryReceiver = (receiver) => {
   let allowReceiver = true;
+
   return (result) => {
     if (!allowReceiver) {
       return;
@@ -108,7 +109,7 @@ export const requestor = (action) => {
           return cancellor;
         }
       } catch (reason) {
-        getFail(tryReceiver)(reason);
+        fail(reason);
       }
     });
 

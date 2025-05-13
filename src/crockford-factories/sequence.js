@@ -14,6 +14,6 @@ export const sequence = (requestors, spec = {}) => {
     throttle: 1,
     scheduler,
     safeRecursionMode,
-    [__factoryName__]: FactoryName.SEQUENCE,
+    factoryName: FactoryName.SEQUENCE,
   });
 };

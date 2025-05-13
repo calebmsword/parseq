@@ -3,10 +3,11 @@ import { race } from "../crockford-factories/race.js";
 import { asObject } from "../parseq-utilities/misc.js";
 import { looper } from "./control-flow-utils/looper.js";
 
-const REPEAT = "repeat";
+const LOOP = "loop";
 
-export const repeat = (requestor, spec) => {
+export const loop = (requestor, spec) => {
   const {
+    until,
     timeLimit,
     safeRecursionMode,
     scheduler,
@@ -15,18 +16,19 @@ export const repeat = (requestor, spec) => {
 
   return race([
     looper({
+      until,
       requestor,
       safeRecursionMode,
       scheduler,
       maxAttempts,
-      tryAgainOnFail: true,
-      propogateOnRepeat: false,
-      factoryName: REPEAT,
+      tryAgainOnFail: false,
+      propogateOnRepeat: true,
+      factoryName: LOOP,
     }),
   ], {
     timeLimit,
     safeRecursionMode,
     scheduler,
-    factoryName: REPEAT,
+    factoryName: LOOP,
   });
 };

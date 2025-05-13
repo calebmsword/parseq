@@ -8,6 +8,9 @@ import {
 import { branch } from "./branch.js";
 import { makeFailure } from "../misc-factories/make-failure.js";
 import { map } from "../misc-factories/map.js";
+import { makeReason } from "../crockford-factories/crockford-factories-utils/misc.js";
+
+const ALL = "ALL";
 
 /**
  * Takes an array of requestors and succeeds if every requestor succeeds.
@@ -15,22 +18,24 @@ import { map } from "../misc-factories/map.js";
  * failure, the reason is an error object whose cause is an array of every
  * reason.
  * This is implemented as a wrapper around parseq.parallel.
- * @param {*} necessetiesOrSpec
+ * @param {*} necesseties
  * @param {*} spec
  * @returns
  */
-export const all = (necessetiesOrSpec, spec) => {
+export const all = (necesseties, spec) => {
   return sequence([
-    parallel(necessetiesOrSpec, spec),
+    parallel(necesseties, spec),
     branch(
       allSuccessful,
       map((results) => {
         return Object.freeze(results.map(getSuccess));
       }),
       makeFailure((results) => {
-        return new Error("at least one requestor in tuple failed", {
-          cause: results.map(getFailure),
-        });
+        return makeReason(
+          ALL,
+          "at least one requestor failed",
+          results.map(getFailure),
+        );
       }),
     ),
   ]);

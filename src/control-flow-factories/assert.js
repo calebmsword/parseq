@@ -7,15 +7,17 @@ import {
 } from "../parseq-utilities/misc.js";
 import { requestor } from "../parseq-utilities/requestor.js";
 
+const ASSERT = "assert";
+
 export const assert = (condition, description) => {
   if (!isCallable(condition)) {
-    throw makeReason("assert", "condition must be callable", condition);
+    throw makeReason(ASSERT, "condition must be callable", condition);
   }
 
   if (exists(description) && !isString(description)) {
     throw makeReason(
-      "assert",
-      "description must be a string or undefined",
+      ASSERT,
+      "description must be a string or nullish",
       description,
     );
   }
@@ -26,7 +28,7 @@ export const assert = (condition, description) => {
     if (!isBoolean(conditionResult)) {
       fail(
         makeReason(
-          "assert",
+          ASSERT,
           "condition did not return a boolean",
           conditionResult,
         ),
@@ -34,9 +36,11 @@ export const assert = (condition, description) => {
     }
 
     conditionResult ? pass(message) : fail(
-      makeReason("assert", description ? description : "assertion failed", {
-        cause: message,
-      }),
+      makeReason(
+        ASSERT,
+        description ? description : "assertion failed",
+        message,
+      ),
     );
   });
 };

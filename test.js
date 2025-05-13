@@ -6,14 +6,16 @@ import { observe } from "./src/misc-factories/observe.js";
 import { post$ } from "./src/http-factories/post.js";
 import { thru } from "./src/misc-factories/thru.js";
 import { all } from "./src/control-flow-factories/all.js";
-import { repeat } from "./src/control-flow-factories/repeat.js";
+import { loop } from "./src/control-flow-factories/loop.js";
 import { value } from "./src/misc-factories/value.js";
 import { assert } from "./src/control-flow-factories/assert.js";
 import { exists } from "./src/parseq-utilities/misc.js";
+import { repeat } from "./src/control-flow-factories/repeat.js";
+import { trycatch } from "./src/control-flow-factories/trycatch.js";
 
 globalThis.XMLHttpRequest = MockXMLHttpRequest;
 
-const _count = 140;
+const _count = 141;
 
 const { sequence } = parseq;
 
@@ -89,6 +91,7 @@ const _getCoffeesEs8 = async (count) => {
     console.log("Failure!\n", error);
   }
 };
+// _getCoffeesEs8(_count);
 
 // getCoffeesParseq.run({
 //   message: _count,
@@ -100,22 +103,27 @@ const _getCoffeesEs8 = async (count) => {
 //     console.log("Failure!\n", reason);
 //   },
 // });
-// getCoffeesEs8(_count);
 
 let count = 0;
 
-repeat(
+loop(
+  // trycatch({
+  // attempt:
   sequence([
     value({ coffeeName: "frappe" }),
     post$("https://api.sampleapis.com/coffee/hot"),
-    observe(() => {
-      console.log(++count);
-    }),
-    assert((response) => {
-      return !exists(response?.data?.error);
-    }),
+    observe(() => console.log(++count)),
+    // assert(
+    //   (response) => !exists(response?.data?.error),
+    //   "response.data must not describe an error",
+    // ),
   ]),
+  // onFail: thru(),
+  // }),
   {
+    until(response) {
+      return exists(response?.data) && !exists(response?.data?.error);
+    },
     maxAttempts: 10,
     // timeLimit: 1000,
   },

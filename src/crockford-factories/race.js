@@ -15,10 +15,10 @@ export const race = (requestors, spec = {}) => {
     safeRecursionMode,
   } = spec;
 
-  const factoryName = spec[__factoryName__] || FactoryName.RACE;
+  const factoryName = spec.factoryName || FactoryName.RACE;
 
   if (!Array.isArray(requestors) || requestors.length === 0) {
-    throw makeReason(factoryName, "No requestors provided!");
+    throw makeReason(factoryName, "No requestors provided!", requestors);
   }
 
   const listener = checkRequestors(requestors, factoryName);

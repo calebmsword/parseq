@@ -1,30 +1,27 @@
 import { checkRequestors } from "../crockford-factories/crockford-factories-utils/misc.js";
 import {
+  asObject,
   isCallable,
-  isObject,
   makePotentialListener,
+  safeCallback,
 } from "../parseq-utilities/misc.js";
 
 export const trycatch = (spec) => {
-  if (!isObject(spec)) {
-    spec = {};
-  }
-
-  const { attempt, onFail } = spec;
+  const { attempt, onFail } = asObject(spec);
 
   checkRequestors([attempt, onFail], "trycatch");
 
   return makePotentialListener(attempt.isListener, (pass, fail, message) => {
-    let cancellor = attempt({
+    let cancellor = attempt.run({
       message: message,
       success: pass,
-      error(reason) {
-        cancellor = onFail({
+      error: safeCallback(fail, (reason) => {
+        cancellor = onFail.run({
           message: reason,
           success: pass,
           error: fail,
         });
-      },
+      }),
     });
 
     return (reason) => {
