@@ -1,6 +1,5 @@
-import { __factoryName__ } from "../crockford-factories/crockford-factories-utils/misc.js";
-import { race } from "../crockford-factories/race.js";
-import { asObject } from "../parseq-utilities/misc.js";
+import { race } from "../crockford-factories/race.ts";
+import { asObject } from "../parseq-utilities/parseq-utilities-misc.ts";
 import { looper } from "./control-flow-utils/looper.js";
 
 const LOOP = "loop";

@@ -1,26 +1,28 @@
-import { isRequestor } from "../../parseq-utilities/requestor.js";
-import { exists } from "../../parseq-utilities/misc.js";
+import { isRequestor, Requestor } from "../../parseq-utilities/requestor.ts";
+import { exists } from "../../parseq-utilities/parseq-utilities-misc.ts";
 
-export const makeReason = (factoryName, excuse, cause) => {
+export const makeReason = (
+  factoryName: string,
+  excuse?: string,
+  cause?: any,
+) => {
   const excuseText = !exists(excuse) ? "" : `: ${excuse}`;
   return cause !== undefined && cause !== null
     ? new Error(`parseq.${factoryName}${excuseText}`, { cause })
     : new Error(`parseq.${factoryName}${excuseText}`);
 };
 
-export const checkAction = (action, factoryName) => {
-  if (
-    typeof action !== "function" || action.length > 3
-  ) {
-    throw makeReason(
-      factoryName,
-      "A receiver must be a function of one argument!",
-      action,
-    );
-  }
-};
-
-export const checkRequestors = (requestors, factoryName) => {
+/**
+ * Ensures a given value is an array of requestors.
+ * Returns true if any requestor is a listener.
+ * @param {string} factoryName
+ * Used for logging purposes. The message in the thrown error object will
+ * contain the factoryName, which should indicate which requestor factory threw.
+ */
+export const checkRequestors = (
+  requestors: Requestor<any, any>[],
+  factoryName: string,
+) => {
   if (!Array.isArray(requestors)) {
     throw makeReason(
       factoryName,
@@ -75,4 +77,4 @@ export const TimeOption = Object.freeze({
 
 export const allTimeOptions = Object.freeze(Object.values(TimeOption));
 
-export const __factoryName__ = Symbol("factoryName");
+export type ValidTimeOption = typeof TimeOption[keyof typeof TimeOption];

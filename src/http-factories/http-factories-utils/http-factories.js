@@ -1,7 +1,7 @@
-import { empty } from "../../misc-factories/empty.js";
-import { map } from "../../misc-factories/map.js";
-import { sequence } from "../../crockford-factories/sequence.js";
-import { isObject, isString } from "../../parseq-utilities/misc.js";
+import { empty } from "../../misc-factories/empty.ts";
+import { map } from "../../misc-factories/map.ts";
+import { sequence } from "../../crockford-factories/sequence.ts";
+import { isObject, isString } from "../../parseq-utilities/parseq-utilities-misc.ts";
 import { http } from "../http.js";
 import { is2xx } from "../is2xx.js";
 

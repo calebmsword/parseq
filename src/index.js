@@ -1,7 +1,7 @@
-import { fallback } from "./crockford-factories/fallback.js";
-import { parallel } from "./crockford-factories/parallel.js";
-import { sequence } from "./crockford-factories/sequence.js";
-import { race } from "./crockford-factories/race.js";
+import { fallback } from "./crockford-factories/fallback.ts";
+import { parallel } from "./crockford-factories/parallel.ts";
+import { sequence } from "./crockford-factories/sequence.ts";
+import { race } from "./crockford-factories/race.ts";
 import { requestor } from "./parseq-utilities/requestor.js";
 
 export default {

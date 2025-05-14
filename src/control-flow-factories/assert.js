@@ -1,10 +1,10 @@
-import { makeReason } from "../crockford-factories/crockford-factories-utils/misc.js";
+import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import {
   exists,
   isBoolean,
   isCallable,
   isString,
-} from "../parseq-utilities/misc.js";
+} from "../parseq-utilities/parseq-utilities-misc.ts";
 import { requestor } from "../parseq-utilities/requestor.js";
 
 const ASSERT = "assert";

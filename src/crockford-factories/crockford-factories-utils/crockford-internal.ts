@@ -1,14 +1,18 @@
-import { getDefaultScheduler } from "../../parseq-utilities/config.js";
-import { FactoryName, makeReason } from "./misc.js";
-import { requestor } from "../../parseq-utilities/requestor.js";
+import {
+  getDefaultScheduler,
+  Scheduler,
+} from "../../parseq-utilities/config.ts";
+import { FactoryName, makeReason } from "./cockford-factories-misc.ts";
+import { Requestor, requestor } from "../../parseq-utilities/requestor.ts";
 import {
   exists,
   isBoolean,
   isCallable,
   isScheduler,
-} from "../../parseq-utilities/misc.js";
+} from "../../parseq-utilities/parseq-utilities-misc.ts";
+import { Cancellor } from "../../types.d.ts";
 
-export const crockfordInternal = ({
+export const crockfordInternal = <RequestorsValue, ResultValue = RequestorsValue>({
   factoryName,
   requestors,
   initialMessage,
@@ -18,11 +22,27 @@ export const crockfordInternal = ({
   scheduler,
   throttle,
   safeRecursionMode,
+}: {
+  factoryName: string;
+  requestors: Requestor<any, RequestorsValue>[];
+  initialMessage: any;
+  internalAction: (
+    value: ResultValue | undefined,
+    reason: any,
+    requestorIndex: number,
+  ) => void;
+  timeout?: () => void;
+  timeLimit?: number;
+  scheduler?: Scheduler;
+  throttle?: number;
+  safeRecursionMode?: boolean;
 }) => {
-  let cancellors = new Array(requestors.length);
+  let cancellors: (Cancellor | void | undefined)[] | undefined = new Array(
+    requestors.length,
+  );
   let nextIndex = 0;
 
-  let timerId;
+  let timerId: number | undefined;
 
   if (!isCallable(internalAction)) {
     throw makeReason(
@@ -42,7 +62,7 @@ export const crockfordInternal = ({
 
   let schedule;
   let unschedule;
-  if (exists(scheduler)) {
+  if (scheduler !== undefined) {
     if (!isScheduler(scheduler)) {
       throw makeReason(
         factoryName,
@@ -56,12 +76,12 @@ export const crockfordInternal = ({
     ({ schedule, unschedule } = getDefaultScheduler());
   }
 
-  const startRequestor = (message) => {
+  const startRequestor = (message?: any) => {
     if (cancellors === undefined || nextIndex >= requestors.length) {
       return;
     }
 
-    let requestorIndex = nextIndex++;
+    let requestorIndex: number | undefined = nextIndex++;
 
     const requestor = requestors[requestorIndex];
 
@@ -75,7 +95,7 @@ export const crockfordInternal = ({
 
           cancellors[requestorIndex] = undefined;
 
-          internalAction(value, reason, requestorIndex);
+          internalAction(value as ResultValue , reason, requestorIndex);
 
           requestorIndex = undefined;
 
@@ -116,7 +136,7 @@ export const crockfordInternal = ({
     }
   }
 
-  if (!exists(throttle)) {
+  if (throttle === undefined) {
     throttle = 0;
   }
 

@@ -1,8 +1,8 @@
 import {
   checkRequestors,
   makeReason,
-} from "../crockford-factories/crockford-factories-utils/misc.js";
-import { isBoolean, isCallable } from "../parseq-utilities/misc.js";
+} from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
+import { isBoolean, isCallable } from "../parseq-utilities/parseq-utilities-misc.ts";
 import { requestor } from "../parseq-utilities/requestor.js";
 
 const BRANCH = "branch";

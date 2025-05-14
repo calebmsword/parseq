@@ -1,12 +1,13 @@
 import {
+  asObject,
   exists,
   isBoolean,
   isCallable,
   isObject,
   isPrimitive,
   isString,
-  safeCallback
-} from "../parseq-utilities/misc.js";
+  safeCallback,
+} from "../parseq-utilities/parseq-utilities-misc.ts";
 import { requestor } from "../parseq-utilities/requestor.js";
 import {
   ContentType,
@@ -17,10 +18,6 @@ import {
 } from "./http-factories-utils/http-misc.js";
 
 export const http = (baseUrl, method, spec) => {
-  if (isPrimitive(spec)) {
-    spec = {};
-  }
-
   let {
     params,
     headers,
@@ -30,7 +27,7 @@ export const http = (baseUrl, method, spec) => {
     autoParseRequest = true,
     autoParseResponse = true,
     log,
-  } = spec;
+  } = asObject(spec);
 
   if (isPrimitive(headers)) {
     headers = {};

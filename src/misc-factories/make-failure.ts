@@ -1,14 +1,14 @@
-import { makeReason } from "../crockford-factories/crockford-factories-utils/misc.js";
+import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import {
   exists,
   isCallable,
   makeUnspecifiedReason,
-} from "../parseq-utilities/misc.js";
-import { requestor } from "../parseq-utilities/requestor.js";
+} from "../parseq-utilities/parseq-utilities-misc.ts";
+import { requestor } from "../parseq-utilities/requestor.ts";
 
 const MAKE_FAILURE = "makeFailure";
 
-export const makeFailure = (createReason) => {
+export const makeFailure = <M>(createReason: (message: M) => any) => {
   if (!isCallable(createReason)) {
     throw makeReason(
       MAKE_FAILURE,
@@ -17,7 +17,7 @@ export const makeFailure = (createReason) => {
     );
   }
 
-  return requestor((_pass, fail, message) => {
+  return requestor<M, never>((_pass, fail, message) => {
     const reason = createReason(message);
 
     fail(exists(reason) ? reason : makeUnspecifiedReason());

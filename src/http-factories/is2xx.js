@@ -1,7 +1,7 @@
-import { makeFailure } from "../misc-factories/make-failure.js";
+import { makeFailure } from "../misc-factories/make-failure.ts";
 import { branch } from "../control-flow-factories/branch.js";
-import { thru } from "../misc-factories/thru.js";
-import { isObject } from "../parseq-utilities/misc.js";
+import { thru } from "../misc-factories/thru.ts";
+import { isObject } from "../parseq-utilities/parseq-utilities-misc.ts";
 
 export const is2xx = () => {
   return branch(

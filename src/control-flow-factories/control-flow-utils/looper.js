@@ -1,7 +1,11 @@
-import { exists, isBoolean, isCallable } from "../../parseq-utilities/misc.js";
-import { makeReason } from "../../crockford-factories/crockford-factories-utils/misc.js";
+import {
+  exists,
+  isBoolean,
+  isCallable,
+} from "../../parseq-utilities/parseq-utilities-misc.ts";
+import { makeReason } from "../../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import { isRequestor } from "../../parseq-utilities/requestor.js";
-import { makePotentialListener } from "../../parseq-utilities/misc.js";
+import { makeListenerIf } from "../../parseq-utilities/parseq-utilities-misc.ts";
 
 export const looper = ({
   until,
@@ -54,7 +58,7 @@ export const looper = ({
 
   let totalAttempts = 0;
 
-  return makePotentialListener(
+  return makeListenerIf(
     requestor.isListener,
     function attempt(pass, fail, message) {
       let cancellor;

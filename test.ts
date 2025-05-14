@@ -1,15 +1,15 @@
 import parseq from "./src/index.js";
 import MockXMLHttpRequest from "./src/http-factories/http-factories-utils/xml-http-request-mock.js";
 import { get$, httpGet } from "./src/http-factories/get.js";
-import { map } from "./src/misc-factories/map.js";
-import { observe } from "./src/misc-factories/observe.js";
+import { map } from "./src/misc-factories/map.ts";
+import { observe } from "./src/misc-factories/observer.ts";
 import { post$ } from "./src/http-factories/post.js";
-import { thru } from "./src/misc-factories/thru.js";
+import { thru } from "./src/misc-factories/thru.ts";
 import { all } from "./src/control-flow-factories/all.js";
 import { loop } from "./src/control-flow-factories/loop.js";
-import { value } from "./src/misc-factories/value.js";
+import { value } from "./src/misc-factories/value.ts";
 import { assert } from "./src/control-flow-factories/assert.js";
-import { exists } from "./src/parseq-utilities/misc.js";
+import { exists } from "./src/parseq-utilities/parseq-utilities-misc.ts";
 import { repeat } from "./src/control-flow-factories/repeat.js";
 import { trycatch } from "./src/control-flow-factories/trycatch.js";
 
@@ -106,29 +106,45 @@ const _getCoffeesEs8 = async (count) => {
 
 let count = 0;
 
-loop(
-  // trycatch({
-  // attempt:
+// loop(
+//   trycatch({
+//     attempt: sequence([
+//       value({ coffeeName: "frappe" }),
+//       post$("https://api.sampleapis.com/coffee/hot"),
+//       observe(() => console.log(++count)),
+//       assert(
+//         (response) => !exists(response?.data?.error),
+//         "response.data must not describe an error",
+//       ),
+//     ]),
+//     onFail: thru(),
+//   }),
+//   {
+//     until(response) {
+//       return exists(response?.data) && !exists(response?.data?.error);
+//     },
+//     maxAttempts: 10,
+//     // timeLimit: 1000,
+//   },
+// )
+
+repeat(
   sequence([
     value({ coffeeName: "frappe" }),
     post$("https://api.sampleapis.com/coffee/hot"),
     observe(() => console.log(++count)),
-    // assert(
-    //   (response) => !exists(response?.data?.error),
-    //   "response.data must not describe an error",
-    // ),
+    assert(
+      (response) => !exists(response?.data?.error),
+      "response.data must not describe an error",
+    ),
   ]),
-  // onFail: thru(),
-  // }),
   {
-    until(response) {
-      return exists(response?.data) && !exists(response?.data?.error);
-    },
-    maxAttempts: 10,
+    maxAttempts: 3,
     // timeLimit: 1000,
   },
 ).run({
   success() {
+    console.log(".....");
     console.log("success!");
   },
   error(reason) {

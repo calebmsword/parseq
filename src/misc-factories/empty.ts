@@ -1,4 +1,4 @@
-import { value } from "./value.js";
+import { value } from "./value.ts";
 
 export const empty = () => {
   return value(undefined);

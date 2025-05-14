@@ -1,37 +1,30 @@
-import { makeReason } from "../crockford-factories/crockford-factories-utils/misc.js";
+import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import {
   exists,
   isCallable,
   isThenable,
-  makePotentialListener,
-} from "../parseq-utilities/misc.js";
+  makeListenerIf,
+} from "../parseq-utilities/parseq-utilities-misc.ts";
 
 const PROMISE = "promise";
 
-const defaultGetCancellor = (abort) => {
-  return (reason) => {
+const defaultGetCancellor = (abort: (reason?: any) => void) => {
+  return (reason: any) => {
     abort(reason);
   };
 };
 
-/**
- * @param {(message?: any, signal?: AbortSignal) => void} getPromise
- * @param {{
- *  getSignal?: boolean,
- *  cancellable?: boolean,
- *  getCancellor?: (abort: (reason?: any) => void) => (reason?: any) => void
- * }} [spec]
- * @returns {Requestor}
- */
-export const promise = (getPromise, spec) => {
-  if (!isObject(spec)) {
-    spec = {};
-  }
-
+export const promise = <M, T>(
+  getPromise: (message?: M, signal?: AbortSignal) => Promise<T>,
+  spec?: {
+    takesSignal?: boolean;
+    getCancellor?: (abort: (reason?: any) => void) => (reason?: any) => void;
+  },
+) => {
   let {
     takesSignal = false,
     getCancellor,
-  } = spec;
+  } = spec !== null && typeof spec === "object" ? spec : {};
 
   if (takesSignal !== true && exists(getCancellor)) {
     throw makeReason(
@@ -54,15 +47,16 @@ export const promise = (getPromise, spec) => {
     throw makeReason(PROMISE, "getPromise must be callable", getPromise);
   }
 
-  return makePotentialListener(getPromise.length > 0, (pass, fail, message) => {
+  return makeListenerIf<M, T>(getPromise.length > 0, (pass, fail, message) => {
     let cancellor;
-    let signal;
+    let signal: AbortSignal;
 
-    new Promise((resolve, reject) => {
-      if (takesSignal === true) {
+    new Promise<T>((resolve, reject) => {
+      if (takesSignal === true && typeof getCancellor === "function") {
         let abort;
 
         const controller = new AbortController();
+
         ({ signal, abort } = controller);
 
         cancellor = getCancellor(abort);

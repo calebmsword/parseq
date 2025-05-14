@@ -1,14 +1,14 @@
-import { parallel } from "../crockford-factories/parallel.js";
-import { sequence } from "../crockford-factories/sequence.js";
+import { parallel } from "../crockford-factories/parallel.ts";
+import { sequence } from "../crockford-factories/sequence.ts";
 import {
   allSuccessful,
   getFailure,
   getSuccess,
-} from "../parseq-utilities/misc.js";
+} from "../parseq-utilities/parseq-utilities-misc.ts";
 import { branch } from "./branch.js";
-import { makeFailure } from "../misc-factories/make-failure.js";
-import { map } from "../misc-factories/map.js";
-import { makeReason } from "../crockford-factories/crockford-factories-utils/misc.js";
+import { makeFailure } from "../misc-factories/make-failure.ts";
+import { map } from "../misc-factories/map.ts";
+import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 
 const ALL = "ALL";
 
