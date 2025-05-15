@@ -6,12 +6,12 @@ import {
 } from "./crockford-factories-utils/cockford-factories-misc.ts";
 import { parallelInternal } from "./crockford-factories-utils/parallel-internal.ts";
 import {
+  AsSequenceable,
   First,
   Last,
   Message,
-  Sequenceable,
   Value,
-} from "./crockford-factories-utils/sequenceable.ts";
+} from "./crockford-factories-utils/crockford-factories-types.ts";
 
 export type SequenceSpec = {
   timeLimit?: number;
@@ -20,7 +20,7 @@ export type SequenceSpec = {
 };
 
 export const sequence = <Requestors extends Requestor<any, any>[]>(
-  requestors: Sequenceable<Requestors>,
+  requestors: AsSequenceable<Requestors>,
   spec?: SequenceSpec,
 ): Requestor<
   Message<First<Requestors>>,

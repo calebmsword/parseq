@@ -1,17 +1,21 @@
 import { checkRequestors } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import {
-  asObject,
-  isCallable,
   makeListenerIf,
   safeCallback,
 } from "../parseq-utilities/parseq-utilities-misc.ts";
+import { Requestor } from "../parseq-utilities/requestor.ts";
 
-export const trycatch = (spec) => {
-  const { attempt, onFail } = asObject(spec);
+export type TryCatchSpec<M, T, C> = {
+  attempt: Requestor<M, T>;
+  onFail: Requestor<any, C>;
+};
+
+export const trycatch = <M, T, C = T>(spec: TryCatchSpec<M, T, C>) => {
+  const { attempt, onFail } = spec;
 
   checkRequestors([attempt, onFail], "trycatch");
 
-  return makeListenerIf(attempt.isListener, (pass, fail, message) => {
+  return makeListenerIf<M, T | C>(attempt.isListener, (pass, fail, message) => {
     let cancellor = attempt.run({
       message: message,
       success: pass,
@@ -25,7 +29,7 @@ export const trycatch = (spec) => {
     });
 
     return (reason) => {
-      if (isCallable(cancellor)) {
+      if (typeof cancellor === "function") {
         cancellor(reason);
       }
     };

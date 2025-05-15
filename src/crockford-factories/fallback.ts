@@ -1,10 +1,12 @@
 import { Scheduler } from "../parseq-utilities/config.ts";
-import { Requestor } from "../parseq-utilities/requestor.ts";
 import { FactoryName } from "./crockford-factories-utils/cockford-factories-misc.ts";
-import { race } from "./race.ts";
-import { First } from "./crockford-factories-utils/sequenceable.ts";
-
-type Message<R> = R extends Requestor<infer M, unknown> ? M : unknown;
+import { raceInternal } from "./crockford-factories-utils/race-internal.ts";
+import {
+  AsRequestors,
+  AsSameMessages,
+  First,
+  Message,
+} from "./crockford-factories-utils/crockford-factories-types.ts";
 
 export type FallbackSpec = {
   timeLimit: number;
@@ -12,8 +14,11 @@ export type FallbackSpec = {
   safeRecursionMode: boolean;
 };
 
-export const fallback = <Requestors, M = Message<First<Requestors>>>(
-  requestors: Requestors extends Requestor<M, any>[] ? [...Requestors] : [],
+export const fallback = <Requestors>(
+  requestors: AsSameMessages<
+    Requestors,
+    Message<First<AsRequestors<Requestors, any>>>
+  >,
   spec?: FallbackSpec,
 ) => {
   const {
@@ -22,7 +27,7 @@ export const fallback = <Requestors, M = Message<First<Requestors>>>(
     safeRecursionMode,
   } = spec !== null && typeof spec === "object" ? spec : {};
 
-  return race(requestors, {
+  return raceInternal(requestors, {
     timeLimit,
     throttle: 1,
     scheduler,

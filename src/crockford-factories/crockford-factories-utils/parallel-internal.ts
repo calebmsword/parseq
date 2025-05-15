@@ -14,9 +14,7 @@ import {
 } from "../../parseq-utilities/parseq-utilities-misc.ts";
 import { Requestor } from "../../parseq-utilities/requestor.ts";
 import { Scheduler } from "../../parseq-utilities/config.ts";
-import { Value } from "./crockford-test.ts";
-
-type Last<T> = T extends [...unknown[], infer T] ? T : unknown;
+import { ElementOf, Last } from "./crockford-factories-types.ts";
 
 export type ParallelInteralSpec<Message, Value> = {
   timeOption?: ValidTimeOption;
@@ -28,17 +26,10 @@ export type ParallelInteralSpec<Message, Value> = {
   factoryName?: string;
 };
 
-type Lookup<Array, n> = n extends keyof Array ? Array[n] : never;
-type Messag<R> = R extends Requestor<infer M, unknown> ? M : unknown;
-
-type ResultOf<Values extends any[]> = {
-  [n in keyof Values]: Result<Value<Lookup<Values, n>>>;
-};
-
 export const parallelInternal = <
   Message,
   Values extends any[],
-  Value = Values[keyof Values],
+  Value = ElementOf<Values>,
 >(
   necessetiesOrSpec:
     | Requestor<Message, Value>[]

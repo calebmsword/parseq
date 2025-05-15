@@ -1,10 +1,8 @@
 /**
  * Gets the status message corresponding to the provided statusCode.
  * If the statusCode is unrecognized or not a number, then `null` is returned.
- * @param {number} statusCode
- * @returns {string|undefined}
  */
-export const getStatusMessage = (statusCode) => {
+export const getStatusMessage = (statusCode: number) => {
   switch (statusCode) {
     case 100:
       return "Continue";
@@ -127,22 +125,22 @@ export const getStatusMessage = (statusCode) => {
   }
 };
 
-export const ContentType = {
+export const ContentTypes = Object.freeze({
   "json": "application/json",
   "application/json": "application/json",
   "default": "application/json",
   "x-www-form-urlencoded": "application/x-www-form-urlencoded",
   "application/x-www-form-urlencoded": "application/x-www-form-urlencoded",
   "other": "other",
-};
+});
 
-const contentTypes = Object.keys(ContentType);
+const contentTypes = Object.keys(ContentTypes);
 
-export const recognizedContentType = (contentType) => {
+export const recognizedContentType = (contentType: string) => {
   return contentTypes.includes(contentType);
 };
 
-export const searchParamatize = (object) => {
+export const searchParamatize = (object: object) => {
   return new URLSearchParams(Object.entries(object)).toString();
 };
 
@@ -152,10 +150,10 @@ export const Stringify = {
   "default": JSON.stringify,
   "x-www-form-urlencoded": searchParamatize,
   "application/x-www-form-urlencoded": searchParamatize,
-  "other": (body) => String(body),
+  "other": (body: object | string) => String(body),
 };
 
-export const isJson = (headers) => {
+export const isJson = (headers: { [key: string]: string }) => {
   return Object.keys(headers).some((key) => {
     return key.toLowerCase().includes("content-type") &&
       (headers[key] || "")

@@ -1,6 +1,6 @@
 import { makeListenerIf } from "./parseq-utilities-misc.ts";
 
-class Container<State, Message> {
+export class Container<State, Message = any> {
   #state: State;
 
   constructor(state: State) {
@@ -18,6 +18,6 @@ class Container<State, Message> {
   }
 }
 
-export const container = <State, Message>(state: State) => {
+export const container = <State, Message = any>(state: State) => {
   return new Container<State, Message>(state);
 };

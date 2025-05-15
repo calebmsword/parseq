@@ -5,11 +5,14 @@ import {
   isCallable,
   isString,
 } from "../parseq-utilities/parseq-utilities-misc.ts";
-import { requestor } from "../parseq-utilities/requestor.js";
+import { requestor } from "../parseq-utilities/requestor.ts";
 
 const ASSERT = "assert";
 
-export const assert = (condition, description) => {
+export const assert = <M>(
+  condition: (message: M) => boolean,
+  description?: string,
+) => {
   if (!isCallable(condition)) {
     throw makeReason(ASSERT, "condition must be callable", condition);
   }
@@ -22,7 +25,7 @@ export const assert = (condition, description) => {
     );
   }
 
-  return requestor((pass, fail, message) => {
+  return requestor<M, M>((pass, fail, message) => {
     const conditionResult = condition(message);
 
     if (!isBoolean(conditionResult)) {

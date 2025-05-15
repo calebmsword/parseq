@@ -1,8 +1,12 @@
 import { CrockfordRequestor } from "../types.d.ts";
 import { Cancellor } from "../types.d.ts";
-import { exists, isCallable, makeUnspecifiedReason } from "./parseq-utilities-misc.ts";
+import {
+  exists,
+  isCallable,
+  makeUnspecifiedReason,
+} from "./parseq-utilities-misc.ts";
 
-export type Result<V> = { value?: V; reason?: any };
+export type Result<V> = { value?: V; reason?: unknown };
 
 export type Receiver<V> = (result: Result<V>) => void;
 

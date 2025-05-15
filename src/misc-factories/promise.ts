@@ -8,7 +8,7 @@ import {
 
 const PROMISE = "promise";
 
-const defaultGetCancellor = (abort: (reason?: any) => void) => {
+const defaultGetCancellor = (abort: (reason?: unknown) => void) => {
   return (reason: any) => {
     abort(reason);
   };
@@ -18,7 +18,7 @@ export const promise = <M, T>(
   getPromise: (message?: M, signal?: AbortSignal) => Promise<T>,
   spec?: {
     takesSignal?: boolean;
-    getCancellor?: (abort: (reason?: any) => void) => (reason?: any) => void;
+    getCancellor?: (abort: (reason?: unknown) => void) => (reason?: unknown) => void;
   },
 ) => {
   let {

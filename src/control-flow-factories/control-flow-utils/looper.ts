@@ -1,48 +1,62 @@
 import {
   exists,
   isBoolean,
-  isCallable,
 } from "../../parseq-utilities/parseq-utilities-misc.ts";
 import { makeReason } from "../../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
-import { isRequestor } from "../../parseq-utilities/requestor.js";
+import { isRequestor, Requestor } from "../../parseq-utilities/requestor.ts";
 import { makeListenerIf } from "../../parseq-utilities/parseq-utilities-misc.ts";
+import {
+  getDefaultScheduler,
+  Scheduler,
+} from "../../parseq-utilities/config.ts";
+import { failure } from "../../misc-factories/failure.ts";
+import { Cancellor } from "../../types.d.ts";
 
-export const looper = ({
-  until,
-  requestor,
-  safeRecursion,
-  scheduler,
-  maxAttempts,
-  propogateOnRepeat,
-  tryAgainOnFail,
-  factoryName,
-}) => {
+export type LooperSpec<M, V> = {
+  requestor: Requestor<M | V, V>;
+  propogateOnRepeat: boolean;
+  tryAgainOnFail: boolean;
+  factoryName: string;
+  maxAttempts?: number;
+  until?: (value: V) => boolean;
+  safeRecursionMode?: boolean;
+  scheduler?: Scheduler;
+};
+
+export const looper = <M, V>(spec: LooperSpec<M, V>) => {
+  let {
+    until,
+    requestor,
+    safeRecursionMode,
+    scheduler,
+    maxAttempts,
+    propogateOnRepeat,
+    tryAgainOnFail,
+    factoryName,
+  } = spec;
+
   if (
-    exists(maxAttempts) &&
+    maxAttempts !== null && maxAttempts !== undefined &&
     (!Number.isSafeInteger(maxAttempts) || maxAttempts < 0)
   ) {
     throw makeReason(
-      REPEAT,
+      factoryName,
       "Expects a nonnegative, safe integer for maxAttempts",
       maxAttempts,
     );
   }
 
-  if (exists(until) && !isCallable(until)) {
+  if (until !== null && until !== undefined && typeof until !== "function") {
     throw makeReason(
-      REPEAT,
+      factoryName,
       "until must be callable",
       until,
     );
-  } else if (!exists(until)) {
-    until = () => {
-      return true;
-    };
   }
 
   if (exists(propogateOnRepeat) && !isBoolean(propogateOnRepeat)) {
     throw makeReason(
-      REPEAT,
+      factoryName,
       "propogateOnRepeat must be a boolean",
       propogateOnRepeat,
     );
@@ -56,12 +70,16 @@ export const looper = ({
     return failure(makeReason(factoryName, "No attempts allowed", maxAttempts));
   }
 
+  if (scheduler === null || scheduler === undefined) {
+    scheduler = getDefaultScheduler();
+  }
+
   let totalAttempts = 0;
 
-  return makeListenerIf(
+  return makeListenerIf<M | V, V>(
     requestor.isListener,
     function attempt(pass, fail, message) {
-      let cancellor;
+      let cancellor: Cancellor | void;
 
       cancellor = requestor.run({
         message,
@@ -69,7 +87,9 @@ export const looper = ({
           cancellor = undefined;
 
           if (!exists(reason)) {
-            const conditionResult = until(value);
+            const conditionResult = typeof until === "function"
+              ? until(value as V)
+              : true;
 
             if (!isBoolean(conditionResult)) {
               fail(makeReason(
@@ -80,7 +100,7 @@ export const looper = ({
             }
 
             if (conditionResult) {
-              pass(value);
+              pass(value as V);
               return;
             }
           } else if (!tryAgainOnFail) {
@@ -88,7 +108,7 @@ export const looper = ({
             return;
           }
 
-          if (exists(maxAttempts)) {
+          if (maxAttempts !== null && maxAttempts !== undefined) {
             totalAttempts++;
 
             if (totalAttempts >= maxAttempts) {
@@ -111,11 +131,11 @@ export const looper = ({
             cancellor = attempt(
               pass,
               fail,
-              propogateOnRepeat ? value : message,
+              propogateOnRepeat ? value as V : message,
             );
           };
 
-          if (safeRecursion) {
+          if (safeRecursionMode) {
             const id = scheduler.schedule(tryAgain, 0);
             cancellor = () => {
               scheduler.unschedule(id);
@@ -128,7 +148,7 @@ export const looper = ({
       });
 
       return (reason) => {
-        if (isCallable(cancellor)) {
+        if (typeof cancellor === "function") {
           cancellor(reason);
         }
       };

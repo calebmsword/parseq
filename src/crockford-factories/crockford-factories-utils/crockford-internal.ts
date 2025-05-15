@@ -12,6 +12,12 @@ import {
 } from "../../parseq-utilities/parseq-utilities-misc.ts";
 import { Cancellor } from "../../types.d.ts";
 
+/**
+ * Launches requestors and manages timing, cancellation, and throttling.
+ * All crockford factories run this function internally.
+ * @returns {Cancellor}
+ * A cancellor which runs all cancellors of pending requestors.
+ */
 export const crockfordInternal = <RequestorsValue, ResultValue = RequestorsValue>({
   factoryName,
   requestors,
@@ -36,8 +42,8 @@ export const crockfordInternal = <RequestorsValue, ResultValue = RequestorsValue
   scheduler?: Scheduler;
   throttle?: number;
   safeRecursionMode?: boolean;
-}) => {
-  let cancellors: (Cancellor | void | undefined)[] | undefined = new Array(
+}): Cancellor => {
+  let cancellors: (Cancellor | void)[] | undefined = new Array(
     requestors.length,
   );
   let nextIndex = 0;

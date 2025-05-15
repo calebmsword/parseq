@@ -7,7 +7,10 @@
     "@std/assert": "jsr:@std/assert@1"
   },
   "compilerOptions": {
-    "checkJs": true
+    "checkJs": true,
+    "types": [
+      "./global.d.ts"
+    ]
   },
   "lint": {
     "rules": {

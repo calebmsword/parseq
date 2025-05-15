@@ -90,12 +90,6 @@
  *         // time cancel is run, then this function
  *         // will no-op
  *         fail(reason);
- *
- *         // If you call tryReceiver but don't call
- *         // abortRequest, then the receiver will
- *         // never be called again, even if a
- *         // the expensive request receives a
- *         // response.
  *     }
  * });
  * ```
