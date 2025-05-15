@@ -1,10 +1,7 @@
 import { empty } from "../../misc-factories/empty.ts";
 import { map } from "../../misc-factories/map.ts";
 import { sequence } from "../../crockford-factories/sequence.ts";
-import {
-  isObject,
-  isString,
-} from "../../parseq-utilities/parseq-utilities-misc.ts";
+import { isObject, isString } from "../../parseq-utilities/parseq-utilities-type-checking.ts";
 import { http } from "../http.ts";
 import { is2xx } from "../is2xx.ts";
 import { HttpSpec, Json } from "./http-types.ts";

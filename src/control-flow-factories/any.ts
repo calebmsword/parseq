@@ -12,7 +12,7 @@ import {
   parallelInternal,
 } from "../crockford-factories/crockford-factories-utils/parallel-internal.ts";
 import { Scheduler } from "../parseq-utilities/config.ts";
-import { Requestor } from "../parseq-utilities/requestor.ts";
+import { Requestor } from "../types.d.ts";
 
 const ANY = "ANY";
 

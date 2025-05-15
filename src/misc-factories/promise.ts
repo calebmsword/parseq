@@ -1,10 +1,6 @@
 import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
-import {
-  exists,
-  isCallable,
-  isThenable,
-  makeListenerIf,
-} from "../parseq-utilities/parseq-utilities-misc.ts";
+import { makeListenerIf } from "../parseq-utilities/parseq-utilities-misc.ts";
+import { exists, isCallable, isThenable } from "../parseq-utilities/parseq-utilities-type-checking.ts";
 
 const PROMISE = "promise";
 
@@ -18,7 +14,9 @@ export const promise = <M, T>(
   getPromise: (message?: M, signal?: AbortSignal) => Promise<T>,
   spec?: {
     takesSignal?: boolean;
-    getCancellor?: (abort: (reason?: unknown) => void) => (reason?: unknown) => void;
+    getCancellor?: (
+      abort: (reason?: unknown) => void,
+    ) => (reason?: unknown) => void;
   },
 ) => {
   let {

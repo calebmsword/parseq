@@ -1,5 +1,4 @@
 import { Scheduler } from "../parseq-utilities/config.ts";
-import { Requestor } from "../parseq-utilities/requestor.ts";
 import {
   FactoryName,
   TimeOption,
@@ -12,6 +11,7 @@ import {
   Message,
   Value,
 } from "./crockford-factories-utils/crockford-factories-types.ts";
+import { Requestor } from "../types.d.ts";
 
 export type SequenceSpec = {
   timeLimit?: number;

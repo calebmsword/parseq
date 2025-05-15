@@ -1,4 +1,5 @@
-import { Requestor, Result } from "../../parseq-utilities/requestor.ts";
+import { Result } from "../../types.d.ts";
+import { Requestor } from "../../parseq-utilities/requestor-class.ts";
 
 /** The Message of the given Requestor. */
 export type Message<R> = R extends Requestor<infer M, unknown> ? M : unknown;
@@ -7,10 +8,12 @@ export type Message<R> = R extends Requestor<infer M, unknown> ? M : unknown;
 export type Value<R> = R extends Requestor<any, infer V> ? V : unknown;
 
 /** The type of the first element of the given array. */
-export type First<R> = R extends [infer T, ...unknown[]] ? T : unknown;
+export type First<R, Default = unknown> = R extends [infer T, ...unknown[]] ? T
+  : Default;
 
 /** The type of the last element of the given array. */
-export type Last<R> = R extends [...unknown[], infer T] ? T : unknown;
+export type Last<R, Default = unknown> = R extends [...unknown[], infer T] ? T
+  : Default;
 
 /** The type of the nth element of the given array. */
 export type Lookup<Array, n> = n extends keyof Array ? Array[n] : never;

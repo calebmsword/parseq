@@ -1,11 +1,11 @@
+import { safeCallback } from "../parseq-utilities/parseq-utilities-misc.ts";
 import {
   exists,
   isBoolean,
   isCallable,
   isObject,
   isString,
-  safeCallback,
-} from "../parseq-utilities/parseq-utilities-misc.ts";
+} from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { requestor } from "../parseq-utilities/requestor.ts";
 import {
   ContentTypes,

@@ -23,7 +23,7 @@ import { URL as Url } from "node:url";
  * the `fs` module, if you use XMLHttpRequest to grab a local file).
  *
  * This mock was created to emulate the subset of the XMLHttpRequest API that
- * nebula uses and it should not be used for any other purpose. There are many
+ * parseq uses and it should not be used for any other purpose. There are many
  * features in the browser specification for XMLHttpRequest that are missing or
  * incorrect. Let "request" represent an XMLHttpRequest instance:
  *  - request.responseXML is always null.
@@ -44,6 +44,11 @@ import { URL as Url } from "node:url";
  * I also consulted
  * https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest for much of
  * the documentation for this class.
+ * 
+ * If this were to be refactored to be Deno-only instead of Deno 2/Node
+ * compliant, use the fetch API instead of the http/https functions from Node.
+ * (We could introduce a #getDoRequest function that a subclass could override
+ * to allow environment-specific subclasses.)
  */
 class MockXMLHttpRequest {
   // properties ----------------------------------------
@@ -95,9 +100,8 @@ class MockXMLHttpRequest {
    * The `Document` containing the HTML/XML retrieved by the request.
    * This is the interface used by the DOM. This can be `null` if the request
    * is unsuccessful or the if the data can't be parsed as XML.
-   * @type {Document|null}
    */
-  responseXML: object | null = null;
+  responseXML: Document | null = null;
 
   /** The status code of the request, or null if request is unfinished. */
   status: number | null = null;

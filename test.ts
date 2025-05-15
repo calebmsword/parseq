@@ -9,7 +9,7 @@ import { all } from "./src/control-flow-factories/all.ts";
 import { loop } from "./src/control-flow-factories/loop.ts";
 import { value } from "./src/misc-factories/value.ts";
 import { assert } from "./src/control-flow-factories/assert.ts";
-import { exists } from "./src/parseq-utilities/parseq-utilities-misc.ts";
+import { exists } from "./src/parseq-utilities/parseq-utilities-type-checking.ts";
 import { repeat } from "./src/control-flow-factories/repeat.ts";
 import { trycatch } from "./src/control-flow-factories/trycatch.ts";
 import { Container, container } from "./src/parseq-utilities/container.ts";
@@ -96,69 +96,69 @@ type Coffee = {
 type CoffeeData = HttpValue<Coffee>;
 
 const counter = container(0);
-
-sequence([
-  repeat(
-    sequence([
-      get$<Coffee>("https://api.sampleapis.com/coffee/hot"),
-      append<[CoffeeData, number]>(counter.update((count) => {
-        return count + 1;
-      })),
-      append<[CoffeeData, number, number]>(value(3)),
-      observe<[CoffeeData, number, number]>(([, count, number]) => {
-        console.log("count:", count);
-        console.log("number:", number);
-      }),
-      prepend<[number, CoffeeData, number, number]>(value(-1)),
-      observe<[number, CoffeeData, number, number]>(
-        ([num1, coffee, num2, num3]) => {
-          console.log("===pre===");
-          console.log(num1);
-          console.log(`${coffee.code}: ${coffee.status}`);
-          console.log(num2);
-          console.log(num3);
-        },
-      ),
-      pop<[number, CoffeeData, number, number]>(),
-      observe<[number, CoffeeData, number]>(
-        ([num1, coffee, num2]) => {
-          console.log("===pop===");
-          console.log(num1);
-          console.log(`${coffee.code}: ${coffee.status}`);
-          console.log(num2);
-        },
-      ),
-      pop<[number, CoffeeData, number]>(),
-      observe<[number, CoffeeData]>(
-        ([num1, coffee]) => {
-          console.log("===pop===");
-          console.log(num1);
-          console.log(`${coffee.code}: ${coffee.status}`);
-        },
-      ),
-      shift<[number, CoffeeData]>(),
-      observe<CoffeeData>(
-        (coffee) => {
-          console.log("===shi===");
-          console.log(`${coffee.code}: ${coffee.status}`);
-        },
-      ),
-      first<CoffeeData>(),
-      assert<CoffeeData>(
-        (response) => !exists(response?.data?.error),
-        "response.data must not describe an error",
-      ),
-    ]),
-    {
-      maxAttempts: 3,
-      // timeLimit: 10000,
-    },
-  ),
-]).run({
-  success(value) {
-    console.log("success!\n", `${value.code}: ${value.status}`);
-  },
-  error(reason) {
-    console.log("Failure!\n", reason);
-  },
+const increment = counter.update((count) => {
+  return count + 1;
 });
+
+repeat(
+  sequence([
+    get$<Coffee>("https://api.sampleapis.com/coffee/hot"),
+    append<[CoffeeData, number]>(increment),
+    append<[CoffeeData, number, number]>(value(3)),
+    observe<[CoffeeData, number, number]>(([, count, number]) => {
+      console.log("count:", count);
+      console.log("number:", number);
+    }),
+    prepend<[number, CoffeeData, number, number]>(value(-1)),
+    observe<[number, CoffeeData, number, number]>(
+      ([num1, coffee, num2, num3]) => {
+        console.log("===pre===");
+        console.log(num1);
+        console.log(`${coffee.code}: ${coffee.status}`);
+        console.log(num2);
+        console.log(num3);
+      },
+    ),
+    pop<[number, CoffeeData, number, number]>(),
+    observe<[number, CoffeeData, number]>(
+      ([num1, coffee, num2]) => {
+        console.log("===pop===");
+        console.log(num1);
+        console.log(`${coffee.code}: ${coffee.status}`);
+        console.log(num2);
+      },
+    ),
+    pop<[number, CoffeeData, number]>(),
+    observe<[number, CoffeeData]>(
+      ([num1, coffee]) => {
+        console.log("===pop===");
+        console.log(num1);
+        console.log(`${coffee.code}: ${coffee.status}`);
+      },
+    ),
+    shift<[number, CoffeeData]>((shifted) => {
+      console.log("I shifted:", shifted);
+    }),
+    observe<CoffeeData>((coffee) => {
+      console.log("===shi===");
+      console.log(`${coffee.code}: ${coffee.status}`);
+    }),
+    first<CoffeeData>(),
+    assert<CoffeeData>(
+      (response) => !exists(response?.data?.error),
+      "response.data must not describe an error",
+    ),
+  ]),
+  {
+    maxAttempts: 3,
+    // timeLimit: 10000,
+  },
+)
+  .run({
+    success(value) {
+      console.log("success!\n", `${value.code}: ${value.status}`);
+    },
+    error(reason) {
+      console.log("Failure!\n", reason);
+    },
+  });

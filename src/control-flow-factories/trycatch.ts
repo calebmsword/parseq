@@ -3,7 +3,7 @@ import {
   makeListenerIf,
   safeCallback,
 } from "../parseq-utilities/parseq-utilities-misc.ts";
-import { Requestor } from "../parseq-utilities/requestor.ts";
+import { Requestor } from "../types.d.ts";
 
 export type TryCatchSpec<M, T, C> = {
   attempt: Requestor<M, T>;

@@ -1,5 +1,5 @@
 import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
-import { isCallable } from "../parseq-utilities/parseq-utilities-misc.ts";
+import { isCallable } from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { requestor } from "../parseq-utilities/requestor.ts";
 
 const OBSERVE = "observe";

@@ -1,9 +1,6 @@
-import {
-  exists,
-  isBoolean,
-} from "../../parseq-utilities/parseq-utilities-misc.ts";
+import { exists, isBoolean } from "../../parseq-utilities/parseq-utilities-type-checking.ts";
 import { makeReason } from "../../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
-import { isRequestor, Requestor } from "../../parseq-utilities/requestor.ts";
+import { isRequestor } from "../../parseq-utilities/requestor.ts";
 import { makeListenerIf } from "../../parseq-utilities/parseq-utilities-misc.ts";
 import {
   getDefaultScheduler,
@@ -11,6 +8,7 @@ import {
 } from "../../parseq-utilities/config.ts";
 import { failure } from "../../misc-factories/failure.ts";
 import { Cancellor } from "../../types.d.ts";
+import { Requestor } from "../../types.d.ts";
 
 export type LooperSpec<M, V> = {
   requestor: Requestor<M | V, V>;

@@ -1,4 +1,4 @@
-import { requestor, Result } from "../../parseq-utilities/requestor.ts";
+import { requestor } from "../../parseq-utilities/requestor.ts";
 import {
   allTimeOptions,
   checkRequestors,
@@ -9,12 +9,12 @@ import {
 } from "../crockford-factories-utils/cockford-factories-misc.ts";
 import { crockfordInternal } from "../crockford-factories-utils/crockford-internal.ts";
 import {
-  exists,
   makeListenerIf,
 } from "../../parseq-utilities/parseq-utilities-misc.ts";
-import { Requestor } from "../../parseq-utilities/requestor.ts";
+import { exists } from "../../parseq-utilities/parseq-utilities-type-checking.ts";
 import { Scheduler } from "../../parseq-utilities/config.ts";
 import { ElementOf, Last } from "./crockford-factories-types.ts";
+import { Requestor, Result } from "../../types.d.ts";
 
 export type ParallelInteralSpec<Message, Value> = {
   timeOption?: ValidTimeOption;

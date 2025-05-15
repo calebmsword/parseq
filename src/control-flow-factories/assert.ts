@@ -4,7 +4,7 @@ import {
   isBoolean,
   isCallable,
   isString,
-} from "../parseq-utilities/parseq-utilities-misc.ts";
+} from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { requestor } from "../parseq-utilities/requestor.ts";
 
 const ASSERT = "assert";

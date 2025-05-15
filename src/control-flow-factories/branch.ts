@@ -2,11 +2,9 @@ import {
   checkRequestors,
   makeReason,
 } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
-import {
-  isBoolean,
-  isCallable,
-} from "../parseq-utilities/parseq-utilities-misc.ts";
-import { Requestor, requestor } from "../parseq-utilities/requestor.ts";
+import { isBoolean, isCallable } from "../parseq-utilities/parseq-utilities-type-checking.ts";
+import { requestor } from "../parseq-utilities/requestor.ts";
+import { Requestor } from "../types.d.ts";
 
 const BRANCH = "branch";
 

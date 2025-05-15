@@ -1,10 +1,10 @@
 import { all } from "../control-flow-factories/all.ts";
 import { Last } from "../crockford-factories/crockford-factories-utils/crockford-factories-types.ts";
 import { sequence } from "../crockford-factories/sequence.ts";
-import { Requestor } from "../parseq-utilities/requestor.ts";
 import { map } from "./map.ts";
 import { Pop } from "./misc-factories-utils/misc-factories-types.ts";
 import { thru } from "./thru.ts";
+import { Requestor } from "../types.d.ts";
 
 export const append = <Values extends any[]>(
   requestor: Requestor<Pop<Values>, Last<Values>>,

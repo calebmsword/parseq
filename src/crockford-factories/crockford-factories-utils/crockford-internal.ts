@@ -3,14 +3,15 @@ import {
   Scheduler,
 } from "../../parseq-utilities/config.ts";
 import { FactoryName, makeReason } from "./cockford-factories-misc.ts";
-import { Requestor, requestor } from "../../parseq-utilities/requestor.ts";
+import { requestor } from "../../parseq-utilities/requestor.ts";
 import {
   exists,
   isBoolean,
   isCallable,
   isScheduler,
-} from "../../parseq-utilities/parseq-utilities-misc.ts";
+} from "../../parseq-utilities/parseq-utilities-type-checking.ts";
 import { Cancellor } from "../../types.d.ts";
+import { Requestor } from "../../types.d.ts";
 
 /**
  * Launches requestors and manages timing, cancellation, and throttling.
@@ -18,7 +19,10 @@ import { Cancellor } from "../../types.d.ts";
  * @returns {Cancellor}
  * A cancellor which runs all cancellors of pending requestors.
  */
-export const crockfordInternal = <RequestorsValue, ResultValue = RequestorsValue>({
+export const crockfordInternal = <
+  RequestorsValue,
+  ResultValue = RequestorsValue,
+>({
   factoryName,
   requestors,
   initialMessage,
@@ -101,7 +105,7 @@ export const crockfordInternal = <RequestorsValue, ResultValue = RequestorsValue
 
           cancellors[requestorIndex] = undefined;
 
-          internalAction(value as ResultValue , reason, requestorIndex);
+          internalAction(value as ResultValue, reason, requestorIndex);
 
           requestorIndex = undefined;
 

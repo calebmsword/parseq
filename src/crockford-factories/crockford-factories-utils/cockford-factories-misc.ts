@@ -1,5 +1,6 @@
-import { isRequestor, Requestor } from "../../parseq-utilities/requestor.ts";
-import { exists } from "../../parseq-utilities/parseq-utilities-misc.ts";
+import { isRequestor } from "../../parseq-utilities/requestor.ts";
+import { exists } from "../../parseq-utilities/parseq-utilities-type-checking.ts";
+import { Requestor } from "../../types.d.ts";
 
 export const makeReason = (
   factoryName: string,

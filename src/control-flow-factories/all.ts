@@ -5,7 +5,6 @@ import {
   First,
   Message,
   ResultsOf,
-  Value,
   ValuesOf,
 } from "../crockford-factories/crockford-factories-utils/crockford-factories-types.ts";
 import {
@@ -15,7 +14,7 @@ import {
 import { sequence } from "../crockford-factories/sequence.ts";
 import { map } from "../misc-factories/map.ts";
 import { Scheduler } from "../parseq-utilities/config.ts";
-import { Requestor, requestor } from "../parseq-utilities/requestor.ts";
+import { Requestor } from "../types.d.ts";
 
 const ALL = "ALL";
 

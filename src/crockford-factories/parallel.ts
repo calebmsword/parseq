@@ -2,7 +2,6 @@ import {
   FactoryName,
   ValidTimeOption,
 } from "./crockford-factories-utils/cockford-factories-misc.ts";
-import { Requestor } from "../parseq-utilities/requestor.ts";
 import { Scheduler } from "../parseq-utilities/config.ts";
 import { parallelInternal } from "./crockford-factories-utils/parallel-internal.ts";
 import {
@@ -15,6 +14,7 @@ import {
   ValuesOf,
 } from "./crockford-factories-utils/crockford-factories-types.ts";
 import { ParallelInteralSpec } from "./crockford-factories-utils/parallel-internal.ts";
+import { Requestor } from "../types.d.ts";
 
 type FirstMessage<Requireds, Optionals> = Message<
   First<[...AsRequestors<Requireds, any>, ...AsRequestors<Optionals, any>]>

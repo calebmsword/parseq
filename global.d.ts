@@ -31,3 +31,5 @@ declare class XMLHttpRequest {
 
   abort: (reason?: unknown) => void;
 }
+
+declare class Document {}

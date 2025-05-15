@@ -1,7 +1,7 @@
 import { raceInternal } from "../crockford-factories/crockford-factories-utils/race-internal.ts";
 import { Scheduler } from "../parseq-utilities/config.ts";
-import { Requestor } from "../parseq-utilities/requestor.ts";
 import { looper } from "./control-flow-utils/looper.ts";
+import { Requestor } from "../types.d.ts";
 
 const REPEAT = "repeat";
 
@@ -38,5 +38,5 @@ export const repeat = <M, V>(
     safeRecursionMode,
     scheduler,
     factoryName: REPEAT,
-  });
+  }) as Requestor<M, V>;
 };

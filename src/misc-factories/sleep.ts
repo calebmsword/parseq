@@ -1,5 +1,5 @@
 import { getDefaultScheduler, Scheduler } from "../parseq-utilities/config.ts";
-import { isScheduler } from "../parseq-utilities/parseq-utilities-misc.ts";
+import { isScheduler } from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { requestor } from "../parseq-utilities/requestor.ts";
 
 export const sleep = (dt: number, customScheduler: Scheduler) => {
