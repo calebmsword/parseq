@@ -157,12 +157,14 @@ export const parallelInternal = <
             (timeOption === TimeOption.SKIP_OPTIONALS_IF_TIME_REMAINS &&
               numberPendingNecessities < 1)
           ) {
-            cancel(
-              makeReason(
-                factoryName,
-                "All necessities are complete, optional requestors are being cancelled",
-              ),
-            );
+            if (exists(optionals) && numberPending > 0) {
+              cancel(
+                makeReason(
+                  factoryName,
+                  "All necessities are complete, optional requestors are being cancelled",
+                ),
+              );
+            }
 
             if (factoryName === FactoryName.SEQUENCE) {
               const result = results.pop();

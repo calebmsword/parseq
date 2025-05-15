@@ -1,3 +1,4 @@
+import { getLogger } from "../parseq-utilities/config.ts";
 import { safeCallback } from "../parseq-utilities/parseq-utilities-misc.ts";
 import {
   exists,
@@ -33,7 +34,6 @@ export const http = <T>(
     customCancel,
     autoParseRequest = true,
     autoParseResponse = true,
-    log,
   } = spec !== null && typeof spec === "object" ? spec : {};
 
   if (headers === null || typeof headers !== "object") {
@@ -113,13 +113,6 @@ export const http = <T>(
         }
       }
 
-      // If improper log provided, use default log
-      if (!isCallable(log)) {
-        log = (error) => {
-          console.log("Could not autoparse response:\n", error);
-        };
-      }
-
       // requestor can append URL
       if (isString(additionalPath)) {
         baseUrl += "/" + additionalPath;
@@ -193,9 +186,7 @@ export const http = <T>(
         try {
           data = responseHandler(request.responseText);
         } catch (error) {
-          if (typeof log === "function") {
-            log(error);
-          }
+          getLogger().warn("Could not autoparse response:\n", error);
           data = request.responseText;
         }
 

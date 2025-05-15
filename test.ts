@@ -16,12 +16,13 @@ import { Container, container } from "./src/parseq-utilities/container.ts";
 import { any } from "./src/control-flow-factories/any.ts";
 import { HttpValue } from "./src/http-factories/http-factories-utils/http-types.ts";
 import { first } from "./src/misc-factories/first.ts";
-import { Requestor } from "./src/parseq-utilities/requestor.ts";
 import { last } from "./src/misc-factories/last.ts";
 import { append } from "./src/misc-factories/append.ts";
 import { shift } from "./src/misc-factories/shift.ts";
 import { pop } from "./src/misc-factories/pop.ts";
 import { prepend } from "./src/misc-factories/prepend.ts";
+import { pair } from "./src/misc-factories/pair.ts";
+import { requestor } from "./src/parseq-utilities/requestor.ts";
 
 declare namespace globalThis {
   let XMLHttpRequest: new (...args: any[]) => any;
@@ -96,14 +97,13 @@ type Coffee = {
 type CoffeeData = HttpValue<Coffee>;
 
 const counter = container(0);
-const increment = counter.update((count) => {
-  return count + 1;
-});
 
 repeat(
   sequence([
     get$<Coffee>("https://api.sampleapis.com/coffee/hot"),
-    append<[CoffeeData, number]>(increment),
+    pair<CoffeeData, number>(counter.update((count) => {
+      return count + 1;
+    })),
     append<[CoffeeData, number, number]>(value(3)),
     observe<[CoffeeData, number, number]>(([, count, number]) => {
       console.log("count:", count);
@@ -139,7 +139,7 @@ repeat(
     shift<[number, CoffeeData]>((shifted) => {
       console.log("I shifted:", shifted);
     }),
-    observe<CoffeeData>((coffee) => {
+    observe<[CoffeeData]>(([coffee]) => {
       console.log("===shi===");
       console.log(`${coffee.code}: ${coffee.status}`);
     }),
@@ -148,17 +148,23 @@ repeat(
       (response) => !exists(response?.data?.error),
       "response.data must not describe an error",
     ),
+    pop<CoffeeData>(),
+    // requestor((pass, _fail, message) => {
+    //   setTimeout(() => {
+    //     pass(message);
+    //     return;
+    //   }, 0);
+    // })
   ]),
   {
     maxAttempts: 3,
     // timeLimit: 10000,
   },
-)
-  .run({
-    success(value) {
-      console.log("success!\n", `${value.code}: ${value.status}`);
-    },
-    error(reason) {
-      console.log("Failure!\n", reason);
-    },
-  });
+).run({
+  success(value) {
+    console.log("success!\n", `${value.code}: ${value.status}`);
+  },
+  error(reason) {
+    console.log("Failure!\n", reason);
+  },
+});

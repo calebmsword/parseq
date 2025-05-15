@@ -16,7 +16,7 @@ import { map } from "../misc-factories/map.ts";
 import { Scheduler } from "../parseq-utilities/config.ts";
 import { Requestor } from "../types.d.ts";
 
-const ALL = "ALL";
+const ALL = "all";
 
 type AllSpec = {
   timeLimit?: number;
@@ -61,4 +61,3 @@ export const all = <Requestors>(
     }),
   ]);
 };
-

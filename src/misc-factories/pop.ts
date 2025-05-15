@@ -1,12 +1,12 @@
 import { Last } from "../crockford-factories/crockford-factories-utils/crockford-factories-types.ts";
 import { requestor } from "../parseq-utilities/requestor.ts";
-import { Flatten, Pop } from "./misc-factories-utils/misc-factories-types.ts";
+import { Pop } from "./misc-factories-utils/misc-factories-types.ts";
 
 export const pop = <M>(observer?: (popped: Last<M, undefined>) => void) => {
-  return requestor<M, Flatten<Pop<M>>>(
+  return requestor<M, Pop<M>>(
     (pass, _fail, message) => {
       if (!Array.isArray(message)) {
-        pass(undefined as Flatten<Pop<M>>);
+        pass(undefined as Pop<M>);
         return;
       }
       const clone = message.slice();
@@ -14,7 +14,7 @@ export const pop = <M>(observer?: (popped: Last<M, undefined>) => void) => {
       if (typeof observer === "function") {
         observer(popped);
       }
-      pass(clone.length < 2 ? clone[0] : clone);
+      pass(clone as Pop<M>);
     },
   );
 };

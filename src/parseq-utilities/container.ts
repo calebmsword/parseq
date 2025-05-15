@@ -2,7 +2,7 @@ import { makeListenerIf } from "./parseq-utilities-misc.ts";
 import { requestor } from "./requestor.ts";
 
 /**
- * Creates requestor factories for observing or manipulating encapsulated state. 
+ * Creates requestor factories for observing or manipulating encapsulated state.
  */
 export class Container<State, Message = any> {
   #state: State;
@@ -30,9 +30,13 @@ export class Container<State, Message = any> {
     });
   }
 
-  get() {
-    return requestor<any, State>((pass, _fail) => {
-      pass(this.#state);
+  get<T = State>(mapper?: (state: State) => T) {
+    return requestor<any, T>((pass, _fail) => {
+      const result = typeof mapper === "function"
+        ? mapper(this.#state)
+        : this.#state;
+
+      pass(result as T);
       return;
     });
   }

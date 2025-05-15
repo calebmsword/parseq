@@ -248,5 +248,4 @@ export type HttpSpec = {
   customCancel?: CustomCancellorFactory;
   autoParseRequest?: boolean;
   autoParseResponse?: boolean;
-  log?: Log;
 };

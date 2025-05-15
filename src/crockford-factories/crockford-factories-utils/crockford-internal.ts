@@ -122,7 +122,10 @@ export const crockfordInternal = <
         },
       });
 
-      if (requestorIndex !== undefined) {
+      // internalAction can call cancellor returned by crockfordInternal
+      // (see parallelInternal), so it is possible for cancellors to be
+      // undefined here
+      if (requestorIndex !== undefined && cancellors !== undefined) {
         cancellors[requestorIndex] = cancellor;
       }
     } catch (reason) {
