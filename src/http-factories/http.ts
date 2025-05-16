@@ -1,13 +1,16 @@
+import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import { getLogger } from "../parseq-utilities/config.ts";
 import { safeCallback } from "../parseq-utilities/parseq-utilities-misc.ts";
 import {
   exists,
   isBoolean,
   isCallable,
+  isLogger,
   isObject,
   isString,
 } from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { requestor } from "../parseq-utilities/requestor.ts";
+import { Logger } from "../types.d.ts";
 import {
   ContentTypes,
   getStatusMessage,
@@ -21,7 +24,10 @@ import {
   HttpValue,
 } from "./http-factories-utils/http-types.ts";
 
-export const http = <T>(
+export const HTTP = "http";
+
+export const httpInternal = <T>(
+  factoryName: string,
   baseUrl: string,
   method: string,
   spec?: HttpSpec,
@@ -34,6 +40,7 @@ export const http = <T>(
     customCancel,
     autoParseRequest = true,
     autoParseResponse = true,
+    logger,
   } = spec !== null && typeof spec === "object" ? spec : {};
 
   if (headers === null || typeof headers !== "object") {
@@ -42,6 +49,14 @@ export const http = <T>(
 
   if (params === null || typeof params !== "object") {
     params = {};
+  }
+
+  if (exists(logger) && !isLogger(logger)) {
+    throw makeReason(factoryName, "Expected a logger", logger);
+  }
+
+  if (logger === null || logger === undefined) {
+    logger = getLogger();
   }
 
   return requestor<HttpMessage | undefined, HttpValue<T>>(
@@ -150,6 +165,29 @@ export const http = <T>(
 
       const request = new XMLHttpRequest();
 
+      const cancellor = typeof customCancel === "function"
+        ? customCancel(request.abort, fail)
+        : () => {
+          return request.abort;
+        };
+
+      if (!isCallable(cancellor)) {
+        fail(
+          makeReason(
+            factoryName,
+            "customCancel did not return a function",
+            cancellor,
+          ),
+        );
+        return;
+      }
+
+      request.open(method || "GET", baseUrl || "", true);
+
+      Object.keys(headers || {}).forEach((key) => {
+        request.setRequestHeader(key, headers && headers[key] || "");
+      });
+
       request.onreadystatechange = safeCallback(fail, () => {
         if (request.readyState !== XMLHttpRequest.DONE) {
           return;
@@ -186,7 +224,7 @@ export const http = <T>(
         try {
           data = responseHandler(request.responseText);
         } catch (error) {
-          getLogger().warn("Could not autoparse response:\n", error);
+          (logger as Logger).warn("Could not autoparse response:\n", error);
           data = request.responseText;
         }
 
@@ -196,34 +234,30 @@ export const http = <T>(
           headers: responseHeaders,
           data: data as T,
         });
+        return;
       });
 
       request.onerror = safeCallback(fail, () => {
-        throw new Error("An unspecified error occurred in XMLHttpRequest.");
-      });
-
-      request.open(method || "GET", baseUrl || "", true);
-
-      Object.keys(headers || {}).forEach((key) => {
-        request.setRequestHeader(key, headers && headers[key] || "");
+        fail(
+          makeReason(
+            factoryName,
+            "An unspecified error occurred in XMLHttpRequest.",
+          ),
+        );
+        return;
       });
 
       request.send(isString(body) ? body : undefined);
 
-      const cancellor = typeof customCancel === "function"
-        ? customCancel(request.abort, fail)
-        : () => {
-          request.abort;
-        };
-
-      if (!isCallable(cancellor)) {
-        throw Object.assign(
-          new Error("customCancel did not return a function"),
-          { evidence: cancellor },
-        );
-      }
-
       return cancellor;
     },
   );
+};
+
+export const http = <T>(
+  baseUrl: string,
+  method: string,
+  spec?: HttpSpec,
+) => {
+  return httpInternal<T>(HTTP, baseUrl, method, spec);
 };

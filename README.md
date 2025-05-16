@@ -16,7 +16,7 @@ This codebase is in an alpha state.
 
   > Never write a naked pass or fail.
   
-  > Any callbacks which perform a pass or fail may only be followed by a statement that defines and/or returns a cancellor.
+  > Any code which passes a callback which performs a pass or fail to an event listener or an asynchronous API may only be followed by any combination of the following kinds of code: 1) provision of another callback which performs a pass/fail to an event listener, 2) a line of code which initiates the asynchronous request, 3) or a statement that defines and/or returns a cancellor.
 
   > All callbacks must be wrapped in try-catches to ensure aysnchronous callbacks propogate exceptions as failures.
 

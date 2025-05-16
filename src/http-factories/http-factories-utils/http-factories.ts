@@ -1,12 +1,15 @@
 import { empty } from "../../misc-factories/empty.ts";
 import { map } from "../../misc-factories/map.ts";
 import { sequence } from "../../crockford-factories/sequence.ts";
-import { isObject, isString } from "../../parseq-utilities/parseq-utilities-type-checking.ts";
-import { http } from "../http.ts";
+import {
+  isObject,
+  isString,
+} from "../../parseq-utilities/parseq-utilities-type-checking.ts";
+import { httpInternal } from "../http.ts";
 import { is2xx } from "../is2xx.ts";
 import { HttpSpec, Json } from "./http-types.ts";
 
-export const listenerHttpFactory = <T>(method: string) => {
+export const listenerHttpFactory = <T>(method: string, factoryName: string) => {
   return (url: string, spec?: HttpSpec) => {
     return sequence([
       map<string | Json, { body: string | Json }>((message) => {
@@ -14,26 +17,26 @@ export const listenerHttpFactory = <T>(method: string) => {
           ? { body: message }
           : { body: {} };
       }),
-      http<T>(url, method, spec),
+      httpInternal<T>(factoryName, url, method, spec),
       is2xx<T>(),
     ]);
   };
 };
 
-export const nonListenerHttpFactory = <T>(method: string) => {
+export const nonListenerHttpFactory = <T>(method: string, factoryName: string) => {
   return (url: string, spec?: HttpSpec) => {
     return sequence([
       empty(),
-      http<T>(url, method, spec),
+      httpInternal<T>(factoryName, url, method, spec),
       is2xx<T>(),
     ]);
   };
 };
 
-export const httpSpecificMethod = <T>(method: string) => {
+export const httpSpecificMethod = <T>(method: string, factoryName: string) => {
   return (baseUrl: string, spec?: HttpSpec) => {
     return sequence([
-      http<T>(baseUrl, method, spec),
+      httpInternal<T>(factoryName, baseUrl, method, spec),
       is2xx<T>(),
     ]);
   };

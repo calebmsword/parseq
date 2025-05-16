@@ -26,3 +26,8 @@ export const isScheduler = (value: any) => {
   return isObject(value) && isCallable(value.schedule) &&
     isCallable(value.unschedule);
 };
+
+export const isLogger = (value: any) => {
+  return isObject(value) && isCallable(value.debug) && isCallable(value.info) &&
+    isCallable(value.log) && isCallable(value.warn) && isCallable(value.error);
+};

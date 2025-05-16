@@ -1,3 +1,4 @@
+import { Logger } from "../../types.d.ts";
 import { ContentTypes } from "./http-misc.ts";
 
 export type ContentType = keyof typeof ContentTypes;
@@ -248,4 +249,5 @@ export type HttpSpec = {
   customCancel?: CustomCancellorFactory;
   autoParseRequest?: boolean;
   autoParseResponse?: boolean;
+  logger?: Logger;
 };

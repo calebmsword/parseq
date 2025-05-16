@@ -28,6 +28,9 @@ export type ValuesOf<Requestors> = {
   [n in keyof Requestors]: Value<Lookup<Requestors, n>>;
 };
 
+/** A union type of all values mapped by the array-like type. */
+export type ElementOf<ArrayLike> = Lookup<ArrayLike, number>;
+
 /**
  * "Casts" the given type as a Requestor tuple where each Requestor takes the
  * same message, or as an empty array if this is impossible.
@@ -35,9 +38,6 @@ export type ValuesOf<Requestors> = {
 export type AsRequestors<Requestors, M> = Requestors extends Requestor<M, any>[]
   ? [...Requestors]
   : [];
-
-/** A union type of all values mapped by the array-like type. */
-export type ElementOf<ArrayLike> = Lookup<ArrayLike, number>;
 
 /**
  * Is the given type ThisRequestor if ThisRequestor is a Requestor that takes a
