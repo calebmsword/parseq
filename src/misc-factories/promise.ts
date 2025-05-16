@@ -63,11 +63,12 @@ export const promise = <M, T>(
       const newPromise = getPromise(message, signal);
 
       if (!isThenable(newPromise)) {
-        throw makeReason(
+        fail(makeReason(
           PROMISE,
           "getPromise did not return a thenable",
           newPromise,
-        );
+        ));
+        return;
       }
 
       newPromise.then(resolve).catch(reject);

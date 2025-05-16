@@ -42,9 +42,11 @@ export const branch = <M, T, F = T>(
         success: pass,
         error: fail,
       });
-
-    if (isCallable(cancellor)) {
-      return cancellor;
-    }
+    
+    return (reason?: any) => {
+      if (typeof cancellor === "function") {
+        cancellor(reason);
+      }
+    };
   });
 };

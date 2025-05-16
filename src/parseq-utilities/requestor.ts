@@ -29,6 +29,7 @@ const getTryReceiver = <V>(receiver: Receiver<V>): Receiver<V> => {
 const getPass = <V>(tryReceiver: Receiver<V>) => {
   return (value: V) => {
     tryReceiver({ value });
+    return;
   };
 };
 
@@ -44,6 +45,7 @@ const getFail = <V>(tryReceiver: Receiver<V>) => {
       reason = makeUnspecifiedReason();
     }
     tryReceiver({ reason });
+    return;
   };
 };
 
@@ -68,8 +70,10 @@ export const requestor = <M, V>(action: Action<M, V>) => {
         if (isCallable(cancellor)) {
           return cancellor;
         }
+        return;
       } catch (reason) {
         fail(reason);
+        return;
       }
     })
     : new Requestor<M, V>((receiver) => {
@@ -81,8 +85,10 @@ export const requestor = <M, V>(action: Action<M, V>) => {
         if (isCallable(cancellor)) {
           return cancellor;
         }
+        return;
       } catch (reason) {
         fail(reason);
+        return;
       }
     });
 

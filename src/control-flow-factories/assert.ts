@@ -36,6 +36,7 @@ export const assert = <M>(
           conditionResult,
         ),
       );
+      return;
     }
 
     conditionResult ? pass(message) : fail(
@@ -45,5 +46,6 @@ export const assert = <M>(
         message,
       ),
     );
+    return;
   });
 };

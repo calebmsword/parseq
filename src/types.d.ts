@@ -1,6 +1,6 @@
 export { Requestor } from "./parseq-utilities/requestor-class.ts";
 
-export type Cancellor = (reason?: unknown) => void;
+export type Cancellor = (reason?: any) => void;
 
 export type Result<V> = { value?: V; reason?: any };
 

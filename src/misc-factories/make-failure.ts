@@ -15,5 +15,6 @@ export const makeFailure = <M>(createReason: (message: M) => any) => {
 
   return requestor<M, never>((_pass, fail, message) => {
     fail(createReason(message));
+    return;
   });
 };

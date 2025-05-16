@@ -18,7 +18,7 @@ import { Requestor } from "../types.d.ts";
 
 const ALL = "all";
 
-type AllSpec = {
+export type AllSpec = {
   timeLimit?: number;
   throttle?: number;
   scheduler?: Scheduler;

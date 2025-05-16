@@ -2,6 +2,9 @@ import { makeFailure } from "../misc-factories/make-failure.ts";
 import { branch } from "../control-flow-factories/branch.ts";
 import { thru } from "../misc-factories/thru.ts";
 import { HttpValue } from "./http-factories-utils/http-types.ts";
+import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
+
+const IS_2XX = "is2xx";
 
 export const is2xx = <T>() => {
   return branch<HttpValue<T>, HttpValue<T>>(
@@ -14,9 +17,11 @@ export const is2xx = <T>() => {
     },
     thru(),
     makeFailure((response) => {
-      return new Error(`${response.code}: ${response.status}`, {
-        cause: response,
-      });
+      return makeReason(
+        IS_2XX,
+        `${response.code}: ${response.status}`,
+        response,
+      );
     }),
   );
 };

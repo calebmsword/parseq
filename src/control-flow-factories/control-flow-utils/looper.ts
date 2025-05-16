@@ -1,6 +1,7 @@
 import {
   exists,
   isBoolean,
+  isScheduler,
 } from "../../parseq-utilities/parseq-utilities-type-checking.ts";
 import { makeReason } from "../../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import { isRequestor } from "../../parseq-utilities/requestor.ts";
@@ -64,15 +65,20 @@ export const looper = <M, V>(spec: LooperSpec<M, V>) => {
   }
 
   if (!isRequestor(requestor)) {
-    throw makeReason(factoryName, "expected a requestor", requestor);
+    throw makeReason(factoryName, "no given a proper requestor", requestor);
   }
 
-  if (maxAttempts === 0) {
-    return failure(makeReason(factoryName, "No attempts allowed", maxAttempts));
+  if (exists(scheduler) && !isScheduler(scheduler)) {
+    throw makeReason(factoryName, "not given a proper scheduler", scheduler);
   }
 
   if (scheduler === null || scheduler === undefined) {
     scheduler = getDefaultScheduler();
+  }
+
+  // If no attempts allowed, simply return a failure.
+  if (maxAttempts === 0) {
+    return failure(makeReason(factoryName, "No attempts allowed", maxAttempts));
   }
 
   let totalAttempts = 0;
@@ -99,6 +105,7 @@ export const looper = <M, V>(spec: LooperSpec<M, V>) => {
                 "condition did not return a boolean",
                 conditionResult,
               ));
+              return;
             }
 
             if (conditionResult) {
@@ -135,21 +142,22 @@ export const looper = <M, V>(spec: LooperSpec<M, V>) => {
               fail,
               propogateOnRepeat ? value as V : message,
             );
+            return;
           };
 
-          if (safeRecursionMode) {
-            const id = scheduler.schedule(tryAgain, 0);
-            cancellor = () => {
-              scheduler.unschedule(id);
-            };
+          if (!safeRecursionMode) {
+            tryAgain();
             return;
           }
 
-          tryAgain();
+          const id = scheduler.schedule(tryAgain, 0);
+          cancellor = () => {
+            scheduler.unschedule(id);
+          };
         },
       });
 
-      return (reason) => {
+      return (reason?: any) => {
         if (typeof cancellor === "function") {
           cancellor(reason);
         }

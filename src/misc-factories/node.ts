@@ -2,7 +2,10 @@ import {
   makeListenerIf,
   safeCallback,
 } from "../parseq-utilities/parseq-utilities-misc.ts";
-import { exists, isCallable } from "../parseq-utilities/parseq-utilities-type-checking.ts";
+import {
+  exists,
+  isCallable,
+} from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { Cancellor } from "../types.d.ts";
 
 export const node = <M, T>(
@@ -23,6 +26,7 @@ export const node = <M, T>(
       return takesNodeStyleCallback(
         safeCallback(fail, (error, data) => {
           exists(error) ? fail(error) : pass(data);
+          return;
         }),
         message,
       );
