@@ -17,10 +17,12 @@ export const trycatch = <M, T, C = T>(spec: TryCatchSpec<M, T, C>) => {
 
   return makeListenerIf<M, T | C>(attempt.isListener, (pass, fail, message) => {
     let cancellor = attempt.run({
+      runOnFutureTick: false,
       message: message,
       success: pass,
       error: safeCallback(fail, (reason) => {
         cancellor = onFail.run({
+          runOnFutureTick: false,
           message: reason,
           success: pass,
           error: fail,

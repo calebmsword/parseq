@@ -2,7 +2,10 @@ import {
   checkRequestors,
   makeReason,
 } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
-import { isBoolean, isCallable } from "../parseq-utilities/parseq-utilities-type-checking.ts";
+import {
+  isBoolean,
+  isCallable,
+} from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { requestor } from "../parseq-utilities/requestor.ts";
 import { Requestor } from "../types.d.ts";
 
@@ -27,8 +30,18 @@ export const branch = <M, T, F = T>(
     }
 
     const cancellor = boolean
-      ? ifTrue.run({ message, success: pass, error: fail })
-      : ifFalse.run({ message, success: pass, error: fail });
+      ? ifTrue.run({
+        runOnFutureTick: false,
+        message,
+        success: pass,
+        error: fail,
+      })
+      : ifFalse.run({
+        runOnFutureTick: false,
+        message,
+        success: pass,
+        error: fail,
+      });
 
     if (isCallable(cancellor)) {
       return cancellor;

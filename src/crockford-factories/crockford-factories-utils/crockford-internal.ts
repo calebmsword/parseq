@@ -97,6 +97,7 @@ export const crockfordInternal = <
 
     try {
       const cancellor = requestor.run({
+        runOnFutureTick: false,
         message,
         receiver({ value, reason }) {
           if (cancellors === undefined || requestorIndex === undefined) {

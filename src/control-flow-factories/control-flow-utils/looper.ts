@@ -1,4 +1,7 @@
-import { exists, isBoolean } from "../../parseq-utilities/parseq-utilities-type-checking.ts";
+import {
+  exists,
+  isBoolean,
+} from "../../parseq-utilities/parseq-utilities-type-checking.ts";
 import { makeReason } from "../../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import { isRequestor } from "../../parseq-utilities/requestor.ts";
 import { makeListenerIf } from "../../parseq-utilities/parseq-utilities-misc.ts";
@@ -80,6 +83,7 @@ export const looper = <M, V>(spec: LooperSpec<M, V>) => {
       let cancellor: Cancellor | void;
 
       cancellor = requestor.run({
+        runOnFutureTick: false,
         message,
         receiver({ value, reason }) {
           cancellor = undefined;

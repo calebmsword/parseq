@@ -1,5 +1,11 @@
 import { Cancellor, Receiver } from "../types.d.ts";
-import { exists, isCallable } from "./parseq-utilities-type-checking.ts";
+import {
+  exists,
+  isBoolean,
+  isCallable,
+  isScheduler,
+} from "./parseq-utilities-type-checking.ts";
+import { getDefaultScheduler, Scheduler } from "./config.ts";
 
 export type CrockfordRequestor<M, V> = (
   receiver: (result: { value: V; reason: any }) => void,
@@ -28,10 +34,21 @@ export class Requestor<M, V> {
     receiver?: Receiver<V>;
     success?: (value: V) => void;
     error?: (reason: any) => void;
+    runOnFutureTick?: boolean;
+    scheduler?: Scheduler;
   }) {
-    let { message, receiver, success, error } = typeof spec === "object"
-      ? spec
-      : { success() {} };
+    let { message, receiver, success, error, runOnFutureTick, scheduler } =
+      typeof spec === "object" ? spec : { success() {} };
+
+    if (!isBoolean(runOnFutureTick)) {
+      runOnFutureTick = true;
+    }
+
+    if (
+      scheduler === null || scheduler === undefined || !isScheduler(scheduler)
+    ) {
+      scheduler = getDefaultScheduler();
+    }
 
     if (typeof receiver === "function") {
       if (receiver.length !== 1) {
@@ -56,7 +73,16 @@ export class Requestor<M, V> {
     }
 
     return this.#crockfordRequestor(
-      receiver as (result: { value: V; reason: any }) => void,
+      (result) => {
+        runOnFutureTick
+          ? scheduler.schedule(
+            receiver as (...args: any) => void,
+            0,
+            result,
+          )
+          : (receiver as Receiver<V>)(result);
+        return;
+      },
       message as M,
     );
   }

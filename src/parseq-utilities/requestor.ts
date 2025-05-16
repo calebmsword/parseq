@@ -8,13 +8,14 @@ const getTryReceiver = <V>(receiver: Receiver<V>): Receiver<V> => {
 
   return (result: Result<V>) => {
     if (!allowReceiver) {
-      if (exists(result.reason) && result.reason instanceof Error) {
+      if (result.reason instanceof Error) {
         const logger = getLogger();
         logger.warn(
-          "\nWARNING: A reciever that was already called was called in a " +
+          "\nWARNING: A receiver that was already called was called in a " +
             "failure state. This likely occurred from an uncaught error thrown " +
-            'in the "success", "error", or "receiver" callback given to a run ' +
-            "method.\n",
+            "in a callback executed asynchronously, or from an uncaught error " +
+            'in a "success", "error", or "receiver" callback given to a run ' +
+            "method excecuted unsafely.\nThe error is:",
           result.reason,
         );
       }
