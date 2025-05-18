@@ -1,6 +1,6 @@
 import parseq from "./src/index.js";
 import MockXMLHttpRequest from "./src/http-factories/http-factories-utils/xml-http-request-mock.ts";
-import { get$, httpGet } from "./src/http-factories/get.ts";
+import { get$, mapToGet$ } from "./src/http-factories/get.ts";
 import { map } from "./src/misc-factories/map.ts";
 import { observe } from "./src/misc-factories/observer.ts";
 import { post$ } from "./src/http-factories/post.ts";
@@ -56,7 +56,7 @@ const getCoffeesParseq = sequence([
   observe((value) => console.log(value)),
 
   map((response) => ({ pathname: String(response.data.id) })),
-  httpGet("https://api.sampleapis.com/coffee/hot"),
+  mapToGet$("https://api.sampleapis.com/coffee/hot"),
 ]);
 
 // let count = 0;
@@ -89,66 +89,61 @@ const getCoffeesParseq = sequence([
 //   },
 // )
 
-type Coffee = {
-  [key: string]: string | unknown;
-  error?: unknown;
-};
-
-type CoffeeData = HttpValue<Coffee>;
+type Coffee = { title: string }[];
 
 const counter = container(0);
 
 repeat(
   sequence([
     get$<Coffee>("https://api.sampleapis.com/coffee/hot"),
-    pair<CoffeeData, number>(counter.update((count) => {
+    pair<Coffee, number>(counter.update((count) => {
       return count + 1;
     })),
-    append<[CoffeeData, number, number]>(value(3)),
-    observe<[CoffeeData, number, number]>(([, count, number]) => {
+    append<[Coffee, number, number]>(value(3)),
+    observe<[Coffee, number, number]>(([, count, number]) => {
       console.log("count:", count);
       console.log("number:", number);
     }),
-    prepend<[number, CoffeeData, number, number]>(value(-1)),
-    observe<[number, CoffeeData, number, number]>(
+    prepend<[number, Coffee, number, number]>(value(-1)),
+    observe<[number, Coffee, number, number]>(
       ([num1, coffee, num2, num3]) => {
         console.log("===pre===");
         console.log(num1);
-        console.log(`${coffee.code}: ${coffee.status}`);
+        console.log(coffee[0].title);
         console.log(num2);
         console.log(num3);
       },
     ),
-    pop<[number, CoffeeData, number, number]>(),
-    observe<[number, CoffeeData, number]>(
+    pop<[number, Coffee, number, number]>(),
+    observe<[number, Coffee, number]>(
       ([num1, coffee, num2]) => {
         console.log("===pop===");
         console.log(num1);
-        console.log(`${coffee.code}: ${coffee.status}`);
+        console.log(coffee[0].title);
         console.log(num2);
       },
     ),
-    pop<[number, CoffeeData, number]>(),
-    observe<[number, CoffeeData]>(
+    pop<[number, Coffee, number]>(),
+    observe<[number, Coffee]>(
       ([num1, coffee]) => {
         console.log("===pop===");
         console.log(num1);
-        console.log(`${coffee.code}: ${coffee.status}`);
+        console.log(coffee[0].title);
       },
     ),
-    shift<[number, CoffeeData]>((shifted) => {
+    shift<[number, Coffee]>((shifted) => {
       console.log("I shifted:", shifted);
     }),
-    observe<[CoffeeData]>(([coffee]) => {
+    observe<[Coffee]>(([coffee]) => {
       console.log("===shi===");
-      console.log(`${coffee.code}: ${coffee.status}`);
+      console.log(coffee[0].title);
     }),
-    first<CoffeeData>(),
-    assert<CoffeeData>(
-      (response) => !exists(response?.data?.error),
+    first<Coffee>(),
+    assert<Coffee>(
+      (coffee) => !exists(coffee?.error),
       "response.data must not describe an error",
     ),
-    pop<CoffeeData>(),
+    pop<Coffee>(),
     // requestor((pass, _fail, message) => {
     //   setTimeout(() => {
     //     pass(message);
@@ -162,9 +157,9 @@ repeat(
   },
 ).run({
   success(value) {
-    console.log("success!\n", `${value.code}: ${value.status}`);
+    console.log("success!\n", (value || [])[0]);
   },
-  error(reason) {
+  failure(reason) {
     console.log("Failure!\n", reason);
   },
 });

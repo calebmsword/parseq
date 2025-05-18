@@ -9,23 +9,14 @@ type JsonObject = {
   [key: string | number]: JsonPrimitives | JsonPrimitives[] | JsonObject;
 };
 
-/**
- * Represents an object which can be serialized into JSON.
- */
+/** Represents an object which can be serialized into JSON. */
 export type Json = JsonObject | JsonObject[];
 
-/**
- * The factory function which can be passed to `http`.
- */
+/** The factory function which can be passed to `http`. */
 export type CustomCancellorFactory = (
   abortRequest: () => void,
   fail?: (reason?: unknown) => void,
 ) => (reason?: unknown) => void;
-
-/**
- * A function which logs an error.
- */
-export type Log = (error: Error | unknown) => void;
 
 // Huge thanks to @types/node.
 export type IncomingHttpHeaders = {
@@ -180,22 +171,6 @@ export type OutgoingHttpHeaders = {
 };
 
 /**
- * The type of object which can be used as the `spec` argument to `httpGet`,
- * `httpPost`, `httpPut`, and `httpDelete`.
- */
-export type SpecificHttpSpec = {
-  url?: string;
-  params?: { [key: string]: string };
-  headers?: OutgoingHttpHeaders;
-  body?: Json | string;
-  contentType?: ContentType;
-  customCancel?: CustomCancellorFactory;
-  autoParseRequest?: boolean;
-  autoParseResponse?: boolean;
-  log?: Log;
-};
-
-/**
 *  - `pathname`: string. Appends the url path. Should start with a "/".
 *  - `params`: object. Represents query parameter keys and their values.
 Appends any params provided by the factory.
@@ -214,6 +189,7 @@ override any value given to the factory.
 * `spec.customCancel` documentations.
 */
 export type HttpMessage = {
+  url?: string;
   pathname?: string;
   params?: { [key: string]: string };
   body?: Json | string;

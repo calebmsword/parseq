@@ -2,7 +2,7 @@ import { requestor } from "./requestor.ts";
 import { Action } from "../types.d.ts";
 import { Requestor } from "../types.d.ts";
 
-export const safeCallback = <T extends any[]>(
+export const arbiter = <T extends any[]>(
   fail: (reason: any) => void,
   callback: (...args: T) => void,
 ) => {

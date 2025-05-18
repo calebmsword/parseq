@@ -26,16 +26,6 @@ export const setDefaultScheduler = (scheduler: Scheduler) => {
   defaultScheduler = scheduler;
 };
 
-let safeRecursionMode = false;
-
-export const getSafeRecursionMode = () => {
-  return safeRecursionMode;
-};
-
-export const setSafeRecursionMode = (isSafe: boolean) => {
-  safeRecursionMode = isSafe;
-};
-
 let logger: Logger = {
   debug: console.debug,
   log: console.log,

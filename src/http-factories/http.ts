@@ -1,6 +1,6 @@
 import { makeReason } from "../crockford-factories/crockford-factories-utils/cockford-factories-misc.ts";
 import { getLogger } from "../parseq-utilities/config.ts";
-import { safeCallback } from "../parseq-utilities/parseq-utilities-misc.ts";
+import { arbiter } from "../parseq-utilities/parseq-utilities-misc.ts";
 import {
   exists,
   isBoolean,
@@ -10,7 +10,6 @@ import {
   isString,
 } from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { requestor } from "../parseq-utilities/requestor.ts";
-import { Logger } from "../types.d.ts";
 import {
   ContentTypes,
   getStatusMessage,
@@ -28,8 +27,8 @@ export const HTTP = "http";
 
 export const httpInternal = <T>(
   factoryName: string,
-  baseUrl: string,
-  method: string,
+  baseUrl?: string,
+  method?: string,
   spec?: HttpSpec,
 ) => {
   let {
@@ -77,6 +76,10 @@ export const httpInternal = <T>(
       const additionalHeaders = httpMessage.headers;
       const additionalParams = httpMessage.params;
       const additionalPath = httpMessage.pathname;
+
+      if (isString(httpMessage.url)) {
+        baseUrl = httpMessage.url;
+      }
 
       // requestor can disable automatic request parsing
       if (isBoolean(httpMessage.autoParseRequest)) {
@@ -188,7 +191,7 @@ export const httpInternal = <T>(
         request.setRequestHeader(key, headers && headers[key] || "");
       });
 
-      request.onreadystatechange = safeCallback(fail, () => {
+      request.onreadystatechange = arbiter(fail, () => {
         if (request.readyState !== XMLHttpRequest.DONE) {
           return;
         }
@@ -196,7 +199,7 @@ export const httpInternal = <T>(
         // when the request is finished, request is no longer null
         const code = request.status as number;
 
-        const message = getStatusMessage(request.status as number);
+        const message = getStatusMessage(code);
 
         let responseHeaders: { [key: string]: string } = {};
 
@@ -224,7 +227,7 @@ export const httpInternal = <T>(
         try {
           data = responseHandler(request.responseText);
         } catch (error) {
-          (logger as Logger).warn("Could not autoparse response:\n", error);
+          logger.warn("Could not autoparse response:\n", error);
           data = request.responseText;
         }
 
@@ -237,7 +240,7 @@ export const httpInternal = <T>(
         return;
       });
 
-      request.onerror = safeCallback(fail, () => {
+      request.onerror = arbiter(fail, () => {
         fail(
           makeReason(
             factoryName,

@@ -1,23 +1,83 @@
 <!-- deno-fmt-ignore-file -->
 
-### parseq-redux
+# parseq-redux
 
 A reimplementation of Douglas Crockford's [parseq](https://github.com/douglascrockford/parseq) as described in the 2018 book "How JavaScript Works".
 
 This codebase is in an alpha state.
 
-### Creating Requestors: The Golden Rules
- 
-  > Requestors must only call their receiver once.
+# Introduction
+
+In parseq, individual tasks are represented as **requestors**.
+
+```javascript
+// the parseq library is mostly comprised of requestor factories
+import { get$ } from './parsec.js';
+
+// create a requestor which makes an HTTP get request
+const getUser = get$('https://my-endpoint/api/users/0');
+
+// nothing happens until we run the requestor
+getUser.run({
+  success(user) {
+    console.log(user);
+  },
+  error(reason) {
+    console.log("Failure!\n", reason);
+  }
+});
+```
+
+Complex tasks are represented with requestor composition: 
+
+```javascript
+import {
+  get,
+  map,
+  mapToGet,
+  sequence,
+  wait
+} from './parsec.js';
+
+const displayAvatar = sequence([
+  // get user
+  get('https://my-endpoint/api/users/0'),
+
+  // get github user
+  mapToGet((user) => ({ url: `https://api.github.com/users/${user.name}` })),
+
+  // show the avatar
+  map((githubUser) => {
+    let img = document.createElement('img');
+    img.src = githubUser.avatar_url;
+    document.body.append(img);
+
+    return [img, githubUser];
+  }),
   
-  > Requestors must catch all errors and propogate them as failures.
+  // wait 3 seconds
+  wait(3000),
 
-  > Requestors must never explicitly throw errors and instead must propogate failures.
+  // stop showing avatar
+  map(([img, githubUser]) => {
+    img.remove();
+    return githubUser;
+  })
+]);
 
-  > Never write a naked pass or fail.
-  
-  > Any code which passes a callback which performs a pass or fail to an event listener or an asynchronous API may only be followed by any combination of the following kinds of code: 1) provision of another callback which performs a pass/fail to an event listener, 2) a line of code which initiates the asynchronous request, 3) or a statement that defines and/or returns a cancellor.
+displayAvatar.run({
+  success(githubUser) {
+    console.log(`Avatar displayed for user ${githubUser.username}`);
+  }
+});
+```
 
-  > All callbacks must be wrapped in try-catches to ensure aysnchronous callbacks propogate exceptions as failures.
+# Creating Requestors: The Golden Rules
 
-  > Front-facing code must always run requestors in "runOnFutureTick" mode while libraries *can* run requestors in synchronous mode.
+ > Never write a naked pass or fail.
+
+ > Arbiters must never throw exceptions. Any exception thrown during execution of an arbiter must be propogated by the associated requestor as a failure.
+
+ > Any code which gives an arbiter to an event listener or an asynchronous API may only be followed by any combination of the following kinds of code: 1) provision of another arbiter to an event listener, 2) a line of code which initiates the asynchronous request if it has not already been initiated, or 3) a statement that defines and/or returns a cancellor for that asynchronous request.
+
+ > Front-facing code must always run requestors in "settleOnFutureTick" mode while libraries *can* run requestors in synchronous mode.

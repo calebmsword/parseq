@@ -34,15 +34,15 @@ export const branch = <M, T, F = T>(
         runOnFutureTick: false,
         message,
         success: pass,
-        error: fail,
+        failure: fail,
       })
       : ifFalse.run({
         runOnFutureTick: false,
         message,
         success: pass,
-        error: fail,
+        failure: fail,
       });
-    
+
     return (reason?: any) => {
       if (typeof cancellor === "function") {
         cancellor(reason);

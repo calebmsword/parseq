@@ -7,7 +7,7 @@ import {
 } from "../../parseq-utilities/parseq-utilities-type-checking.ts";
 import { httpInternal } from "../http.ts";
 import { is2xx } from "../is2xx.ts";
-import { HttpSpec, Json } from "./http-types.ts";
+import { HttpMessage, HttpSpec, HttpValue, Json } from "./http-types.ts";
 
 export const listenerHttpFactory = <T>(method: string, factoryName: string) => {
   return (url: string, spec?: HttpSpec) => {
@@ -19,25 +19,41 @@ export const listenerHttpFactory = <T>(method: string, factoryName: string) => {
       }),
       httpInternal<T>(factoryName, url, method, spec),
       is2xx<T>(),
+      map<HttpValue<T>, T>((response) => {
+        return response.data;
+      }),
     ]);
   };
 };
 
-export const nonListenerHttpFactory = <T>(method: string, factoryName: string) => {
+export const nonListenerHttpFactory = <T>(
+  method: string,
+  factoryName: string,
+) => {
   return (url: string, spec?: HttpSpec) => {
     return sequence([
       empty(),
       httpInternal<T>(factoryName, url, method, spec),
       is2xx<T>(),
+      map<HttpValue<T>, T>((response) => {
+        return response.data;
+      }),
     ]);
   };
 };
 
-export const httpSpecificMethod = <T>(method: string, factoryName: string) => {
-  return (baseUrl: string, spec?: HttpSpec) => {
+export const mapToHttpSpecificMethod = <M, V>(
+  method: string,
+  factoryName: string,
+) => {
+  return (mapper: (message: M) => HttpMessage) => {
     return sequence([
-      httpInternal<T>(factoryName, baseUrl, method, spec),
-      is2xx<T>(),
+      map(mapper),
+      httpInternal<V>(factoryName, '', method),
+      is2xx<V>(),
+      map<HttpValue<V>, V>((response) => {
+        return response.data;
+      }),
     ]);
   };
 };

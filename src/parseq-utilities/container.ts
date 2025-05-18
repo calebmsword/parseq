@@ -1,3 +1,6 @@
+import { assert as _assert } from "../control-flow-factories/assert.ts";
+import { sequence } from "../crockford-factories/sequence.ts";
+import { Cancellor } from "../types.d.ts";
 import { makeListenerIf } from "./parseq-utilities-misc.ts";
 import { requestor } from "./requestor.ts";
 
@@ -39,6 +42,19 @@ export class Container<State, Message = any> {
       pass(result as T);
       return;
     });
+  }
+
+  assert(assertion: (state: State) => boolean, description?: string) {
+    return sequence([
+      this.get<State>(),
+      _assert<State>(assertion, description)
+    ]);
+  }
+
+  cancellor(updater: (state: State, reason?: any) => State): Cancellor {
+    return (reason?: any) => {
+      this.#state = updater(this.#state, reason);
+    };
   }
 }
 

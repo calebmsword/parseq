@@ -1,6 +1,6 @@
 import {
+  arbiter,
   makeListenerIf,
-  safeCallback,
 } from "../parseq-utilities/parseq-utilities-misc.ts";
 import {
   exists,
@@ -24,7 +24,7 @@ export const node = <M, T>(
     takesNodeStyleCallback.length > 1,
     (pass, fail, message) => {
       return takesNodeStyleCallback(
-        safeCallback(fail, (error, data) => {
+        arbiter(fail, (error, data) => {
           exists(error) ? fail(error) : pass(data);
           return;
         }),

@@ -29,15 +29,15 @@ export class Requestor<M, V> {
     return this.#listener;
   }
 
-  run(spec: {
+  run(spec?: {
     message?: M;
     receiver?: Receiver<V>;
     success?: (value: V) => void;
-    error?: (reason: any) => void;
+    failure?: (reason: any) => void;
     runOnFutureTick?: boolean;
     scheduler?: Scheduler;
   }) {
-    let { message, receiver, success, error, runOnFutureTick, scheduler } =
+    let { message, receiver, success, failure, runOnFutureTick, scheduler } =
       typeof spec === "object" ? spec : { success() {} };
 
     if (!isBoolean(runOnFutureTick)) {
@@ -55,7 +55,7 @@ export class Requestor<M, V> {
         throw new Error("Receiver must be a function of one argument");
       }
 
-      if (exists(success) || exists(error)) {
+      if (exists(success) || exists(failure)) {
         throw new Error(
           "If you provide a receiver, you cannot also provide a success or error callback!",
         );
@@ -65,7 +65,7 @@ export class Requestor<M, V> {
     } else {
       receiver = ({ value, reason }) => {
         if (exists(reason)) {
-          isCallable(error) ? error?.call(this, reason) : undefined;
+          isCallable(failure) ? failure?.call(this, reason) : undefined;
         } else {
           success?.call(this, value as V);
         }
