@@ -1,0 +1,255 @@
+export const snapshot = {};
+
+snapshot[`EXTERNAL_ID > SYSTEM > should match SYSTEM "" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: undefined,
+  SystemLiteral: undefined,
+  SystemLiteralOnly: '""',
+}
+`;
+
+snapshot[`EXTERNAL_ID > SYSTEM > should match SYSTEM '' 1`] = `
+[Object: null prototype] {
+  PubidLiteral: undefined,
+  SystemLiteral: undefined,
+  SystemLiteralOnly: "''",
+}
+`;
+
+snapshot[`EXTERNAL_ID > SYSTEM > should match SYSTEM "'" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: undefined,
+  SystemLiteral: undefined,
+  SystemLiteralOnly: \`"'"\`,
+}
+`;
+
+snapshot[`EXTERNAL_ID > SYSTEM > should match SYSTEM '"' 1`] = `
+[Object: null prototype] {
+  PubidLiteral: undefined,
+  SystemLiteral: undefined,
+  SystemLiteralOnly: \`'"'\`,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC "" """" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: '""',
+  SystemLiteral: '""',
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC '' """" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: "''",
+  SystemLiteral: '""',
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC "" ''"" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: '""',
+  SystemLiteral: "''",
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC '' ''"" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: "''",
+  SystemLiteral: "''",
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC "'" "'""" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: \`"'"\`,
+  SystemLiteral: \`"'"\`,
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC '' "'""" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: "''",
+  SystemLiteral: \`"'"\`,
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC "'" '"'"" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: \`"'"\`,
+  SystemLiteral: \`'"'\`,
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC '' '"'"" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: "''",
+  SystemLiteral: \`'"'\`,
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC " a-zA-Z0-9-()+,./:=?;!*#@\$_%" '"'"" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: '" a-zA-Z0-9-()+,./:=?;!*#@\$_%"',
+  SystemLiteral: \`'"'\`,
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`EXTERNAL_ID > PUBLIC > should match ""PUBLIC ' a-zA-Z0-9-()+,./:=?;!*#@\$_%' '"'"" 1`] = `
+[Object: null prototype] {
+  PubidLiteral: "' a-zA-Z0-9-()+,./:=?;!*#@\$_%'",
+  SystemLiteral: \`'"'\`,
+  SystemLiteralOnly: undefined,
+}
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "_-" (\\u005F\\u002D) 1`] = `
+[
+  "_-",
+  "_-",
+  groups: undefined,
+  index: 0,
+  input: "_-",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "a." (\\u0061\\u002E) 1`] = `
+[
+  "a.",
+  "a.",
+  groups: undefined,
+  index: 0,
+  input: "a.",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "z0" (\\u007A\\u0030) 1`] = `
+[
+  "z0",
+  "z0",
+  groups: undefined,
+  index: 0,
+  input: "z0",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "A9" (\\u0041\\u0039) 1`] = `
+[
+  "A9",
+  "A9",
+  groups: undefined,
+  index: 0,
+  input: "A9",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "Z·" (\\u005A\\u00B7) 1`] = `
+[
+  "Z·",
+  "Z·",
+  groups: undefined,
+  index: 0,
+  input: "Z·",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "À̀" (\\u00C0\\u0300) 1`] = `
+[
+  "À̀",
+  "À̀",
+  groups: undefined,
+  index: 0,
+  input: "À̀",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "Öͯ" (\\u00D6\\u036F) 1`] = `
+[
+  "Öͯ",
+  "Öͯ",
+  groups: undefined,
+  index: 0,
+  input: "Öͯ",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "Ø‿" (\\u00D8\\u203F) 1`] = `
+[
+  "Ø‿",
+  "Ø‿",
+  groups: undefined,
+  index: 0,
+  input: "Ø‿",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "ö⁀" (\\u00F6\\u2040) 1`] = `
+[
+  "ö⁀",
+  "ö⁀",
+  groups: undefined,
+  index: 0,
+  input: "ö⁀",
+]
+`;
+
+snapshot[`QNAME > should match a single NCNameStartChar NCNameChar(s) :" NCNameStartChar NCNameChar(s) "a0123456789:a0123456789" (\\u0061\\u0030\\u0031\\u0032\\u0033\\u0034\\u0035\\u0036\\u0037\\u0038\\u0039\\u003A\\u0061\\u0030\\u0031\\u0032\\u0033\\u0034\\u0035\\u0036\\u0037\\u0038\\u0039) 1`] = `
+[
+  "a0123456789:a0123456789",
+  "a0123456789:a0123456789",
+  groups: undefined,
+  index: 0,
+  input: "a0123456789:a0123456789",
+]
+`;
+
+snapshot[`PI > should not be greedy 1`] = `
+[
+  "<?target anything is allowed here as long as ? and > are not beside each other like this:	
+?>",
+  "target",
+  "anything is allowed here as long as ? and > are not beside each other like this:	
+",
+  groups: undefined,
+  index: 0,
+  input: "<?target anything is allowed here as long as ? and > are not beside each other like this:	
+?><?target anything is allowed here as long as ? and > are not beside each other like this:	
+?>",
+]
+`;
+
+snapshot[`all grammar regular expressions > should have the expected keys 1`] = `
+[
+  "S",
+  "S_OPT",
+  "SYSTEM_LITERAL",
+  "ABOUT_LEGACY_COMPAT_SystemLiteral",
+  "CHAR",
+  "PUBID_LITERAL",
+  "COMMENT",
+  "EXTERNAL_ID",
+  "EXTERNAL_ID_match",
+  "NAME",
+  "PE_REFERENCE",
+  "XML_DECL",
+  "REFERENCE",
+  "PI",
+  "QNAME",
+  "QNAME_EXACT",
+  "QNAME_GROUP",
+  "NOTATION_DECL",
+  "ENTITY_VALUE",
+  "ELEMENT_DECL",
+  "ATTLIST_DECL",
+  "ENTITY_DECL",
+]
+`;

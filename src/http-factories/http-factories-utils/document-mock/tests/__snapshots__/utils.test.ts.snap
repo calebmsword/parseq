@@ -1,0 +1,330 @@
+export const snapshot = {};
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key allowfullscreen with value \`true\` 1`] = `
+[
+  "allowfullscreen",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key async with value \`true\` 1`] = `
+[
+  "async",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key autofocus with value \`true\` 1`] = `
+[
+  "autofocus",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key autoplay with value \`true\` 1`] = `
+[
+  "autoplay",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key checked with value \`true\` 1`] = `
+[
+  "checked",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key controls with value \`true\` 1`] = `
+[
+  "controls",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key default with value \`true\` 1`] = `
+[
+  "default",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key defer with value \`true\` 1`] = `
+[
+  "defer",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key disabled with value \`true\` 1`] = `
+[
+  "disabled",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key formnovalidate with value \`true\` 1`] = `
+[
+  "formnovalidate",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key hidden with value \`true\` 1`] = `
+[
+  "hidden",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key ismap with value \`true\` 1`] = `
+[
+  "ismap",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key itemscope with value \`true\` 1`] = `
+[
+  "itemscope",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key loop with value \`true\` 1`] = `
+[
+  "loop",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key multiple with value \`true\` 1`] = `
+[
+  "multiple",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key muted with value \`true\` 1`] = `
+[
+  "muted",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key nomodule with value \`true\` 1`] = `
+[
+  "nomodule",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key novalidate with value \`true\` 1`] = `
+[
+  "novalidate",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key open with value \`true\` 1`] = `
+[
+  "open",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key playsinline with value \`true\` 1`] = `
+[
+  "playsinline",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key readonly with value \`true\` 1`] = `
+[
+  "readonly",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key required with value \`true\` 1`] = `
+[
+  "required",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key reversed with value \`true\` 1`] = `
+[
+  "reversed",
+  true,
+]
+`;
+
+snapshot[`HTML_BOOLEAN_ATTRIBUTES > should contain key selected with value \`true\` 1`] = `
+[
+  "selected",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key area with value \`true\` 1`] = `
+[
+  "area",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key base with value \`true\` 1`] = `
+[
+  "base",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key br with value \`true\` 1`] = `
+[
+  "br",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key col with value \`true\` 1`] = `
+[
+  "col",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key embed with value \`true\` 1`] = `
+[
+  "embed",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key hr with value \`true\` 1`] = `
+[
+  "hr",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key img with value \`true\` 1`] = `
+[
+  "img",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key input with value \`true\` 1`] = `
+[
+  "input",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key link with value \`true\` 1`] = `
+[
+  "link",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key meta with value \`true\` 1`] = `
+[
+  "meta",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key param with value \`true\` 1`] = `
+[
+  "param",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key source with value \`true\` 1`] = `
+[
+  "source",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key track with value \`true\` 1`] = `
+[
+  "track",
+  true,
+]
+`;
+
+snapshot[`HTML_VOID_ELEMENTS > should contain key wbr with value \`true\` 1`] = `
+[
+  "wbr",
+  true,
+]
+`;
+
+snapshot[`HTML_RAW_TEXT_ELEMENTS > should contain key script with value \`true\` 1`] = `
+[
+  "script",
+  false,
+]
+`;
+
+snapshot[`HTML_RAW_TEXT_ELEMENTS > should contain key style with value \`true\` 1`] = `
+[
+  "style",
+  false,
+]
+`;
+
+snapshot[`HTML_RAW_TEXT_ELEMENTS > should contain key textarea with value \`true\` 1`] = `
+[
+  "textarea",
+  true,
+]
+`;
+
+snapshot[`HTML_RAW_TEXT_ELEMENTS > should contain key title with value \`true\` 1`] = `
+[
+  "title",
+  true,
+]
+`;
+
+snapshot[`MIME_TYPE > should contain key HTML with value \`true\` 1`] = `
+[
+  "HTML",
+  "text/html",
+]
+`;
+
+snapshot[`MIME_TYPE > should contain key XML_APPLICATION with value \`true\` 1`] = `
+[
+  "XML_APPLICATION",
+  "application/xml",
+]
+`;
+
+snapshot[`MIME_TYPE > should contain key XML_TEXT with value \`true\` 1`] = `
+[
+  "XML_TEXT",
+  "text/xml",
+]
+`;
+
+snapshot[`MIME_TYPE > should contain key XML_XHTML_APPLICATION with value \`true\` 1`] = `
+[
+  "XML_XHTML_APPLICATION",
+  "application/xhtml+xml",
+]
+`;
+
+snapshot[`MIME_TYPE > should contain key XML_SVG_IMAGE with value \`true\` 1`] = `
+[
+  "XML_SVG_IMAGE",
+  "image/svg+xml",
+]
+`;
