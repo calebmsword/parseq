@@ -6,6 +6,9 @@ import { Shift } from "./misc-factories-utils/misc-factories-types.ts";
 import { thru } from "./thru.ts";
 import { Requestor } from "../types.d.ts";
 
+/**
+ * Prepends the given tuple message with the result of the given requestor.
+ */
 export const prepend = <Values extends any[]>(
   requestor: Requestor<Shift<Values>, First<Values>>,
 ) => {

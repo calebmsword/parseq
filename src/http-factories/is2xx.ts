@@ -6,7 +6,7 @@ import { makeReason } from "../crockford-factories/crockford-factories-utils/coc
 
 const IS_2XX = "is2xx";
 
-export const is2xx = <T>() => {
+export const is2xx = <T>(factoryName = IS_2XX) => {
   return branch<HttpValue<T>, HttpValue<T>>(
     (response) => {
       return response !== null && typeof response === "object" &&
@@ -18,7 +18,7 @@ export const is2xx = <T>() => {
     thru(),
     makeFailure((response) => {
       return makeReason(
-        IS_2XX,
+        factoryName,
         `${response.code}: ${response.status}`,
         response,
       );

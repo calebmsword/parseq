@@ -34,6 +34,16 @@ export type ParallelSpec<Requireds, Optionals> = {
   safeRecursionMode?: boolean;
 };
 
+/**
+ * A very general tool for running requestors in "parallel".
+ * Since JavaScript uses an event loop this is not true parallelism (this is
+ * analagous to promise.all/promise.allSettled).
+ * Unlike any or all, an array of required requestors and an array of optional
+ * requestors can be provided. The requestor only succeeds if every required
+ * requestor succeeds, and may succeed if some optionals fail. A timeOption can
+ * be provided to determine how optional requestors are handled if when the
+ * requestors complete (you may terminate the parallel early, for example).
+ */
 export const parallel = <Requireds, Optionals>(
   necessetiesOrSpec:
     | AsSameMessages<Requireds, FirstMessage<Requireds, Optionals>>

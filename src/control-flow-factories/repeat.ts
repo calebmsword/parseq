@@ -7,17 +7,24 @@ const REPEAT = "repeat";
 
 export type RepeatSpec = {
   timeLimit?: number;
+  eachTryOnNewTick?: boolean,
   safeRecursionMode?: boolean;
   scheduler?: Scheduler;
   maxAttempts?: number;
 };
 
+/**
+ * Repeatedly run the given requestor until it succeeds.
+ * The message given to this requestor on the first try is the message used for
+ * each try. 
+ */
 export const repeat = <M, V>(
   requestor: Requestor<M, V>,
   spec?: RepeatSpec,
 ): Requestor<M, V> => {
   const {
     timeLimit,
+    eachTryOnNewTick,
     safeRecursionMode,
     scheduler,
     maxAttempts,
@@ -26,7 +33,7 @@ export const repeat = <M, V>(
   return raceInternal([
     looper({
       requestor: requestor as Requestor<M | V, V>,
-      safeRecursionMode,
+      eachTryOnNewTick,
       scheduler,
       maxAttempts,
       tryAgainOnFail: true,

@@ -2,7 +2,11 @@ import { Last } from "../crockford-factories/crockford-factories-utils/crockford
 import { requestor } from "../parseq-utilities/requestor.ts";
 import { Pop } from "./misc-factories-utils/misc-factories-types.ts";
 
-export const pop = <M>(observer?: (popped: Last<M, undefined>) => void) => {
+/**
+ * Removes the first element of the given message and propogates the result.
+ * A side effect may be provided which operates on the popped element.
+ */
+export const pop = <M>(sideEffect?: (popped: Last<M, undefined>) => void) => {
   return requestor<M, Pop<M>>((pass, _fail, message) => {
     if (!Array.isArray(message)) {
       pass(undefined as Pop<M>);
@@ -11,8 +15,8 @@ export const pop = <M>(observer?: (popped: Last<M, undefined>) => void) => {
 
     const clone = message.slice();
     const popped = clone.pop();
-    if (typeof observer === "function") {
-      observer(popped);
+    if (typeof sideEffect === "function") {
+      sideEffect(popped);
     }
 
     pass(clone as Pop<M>);

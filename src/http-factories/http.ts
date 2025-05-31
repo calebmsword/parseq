@@ -257,6 +257,18 @@ export const httpInternal = <T>(
   );
 };
 
+/**
+ * Highly robust tool for creating requestors that perform http requests.
+ * This should be used if you need fine-grained control over the HTTP request
+ * (if you ever need to look at headers or the status code of the response, or
+ * perhaps you need an esoteric http method like "PATCH" or "OPTIONS").
+ * The returned requestor is a listener that is highly configurable from a
+ * message, which may be useful.
+ * @param baseUrl 
+ * @param method 
+ * @param spec 
+ * @returns 
+ */
 export const http = <T>(
   baseUrl: string,
   method: string,

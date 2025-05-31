@@ -25,10 +25,9 @@ export type AnySpec = {
 };
 
 /**
- * Takes an array of requestors and succeeds if every requestor succeeds.
- * On success, the value is a read-only array of every successful value. On
- * failure, the reason is an error object whose cause is an array of every
- * reason.
+ * Takes an array of requestors and returns an array of results.
+ * Individually failing requestors do not cause the any to fail. The resultant
+ * array will contain Result objects representing a success or failure.
  */
 export const any = <Requestors>(
   requestors: AllHaveSameMessages<Requestors>,

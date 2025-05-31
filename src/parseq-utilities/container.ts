@@ -33,7 +33,7 @@ export class Container<State, Message = any> {
     });
   }
 
-  get<T = State>(mapper?: (state: State) => T) {
+  get<T = State>(mapper?: (selector: State) => T) {
     return requestor<any, T>((pass, _fail) => {
       const result = typeof mapper === "function"
         ? mapper(this.#state)

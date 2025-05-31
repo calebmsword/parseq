@@ -21,6 +21,17 @@ export type TryCatchSpec<M, T, C, F> = {
   ifCancelled?: Cancellor;
 };
 
+/**
+ * Emulates the many uses of the try-catch-finally block.
+ * The `attempt` requestor is tried. If it fails and an `onFail` requestor is
+ * present, onFail intercepts the failure and may return a success. If a 
+ * `cleanup` requestor is present it is always executed lastly no matter if any
+ * of the previous requestors succeed or failed and does whatever it likes with
+ * the success/failure.
+ * A `ifCancelled` cancellor can be provided which is executed whenever this
+ * requestor is performed, as well as the requestor associated with whatever
+ * requestor is currently executing.
+ */
 export const trycatch = <M, Try, Catch = Absent, Finally = Absent>(
   spec: TryCatchSpec<M, Try, Catch, Finally>,
 ) => {
@@ -32,7 +43,7 @@ export const trycatch = <M, Try, Catch = Absent, Finally = Absent>(
     cleanup = thru<any>(),
     ifCancelled = () => {},
   } = spec;
-
+  
   checkRequestors([attempt, onFail], TRY_CATCH);
 
   return withCancellor(

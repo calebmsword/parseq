@@ -22,6 +22,10 @@ export type FirstMessage<Requestors> = Message<
   First<AsRequestors<Requestors, any>>
 >;
 
+/**
+ * Succeeds with the value of the first successful requestor.
+ * Failure only occurs if every requestor given fails.
+ */
 export type RaceSpec = {
   timeLimit?: number;
   throttle?: number;

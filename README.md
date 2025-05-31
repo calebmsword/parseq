@@ -32,21 +32,15 @@ Complex tasks are represented with requestor composition:
 
 ```javascript
 import {
-  get,
-  map,
-  mapToGet,
+  httpGet,
+  mapToHttpGet,
   sequence,
   wait
 } from './parsec.js';
 
 const displayAvatar = sequence([
-  // get user
-  get('https://my-endpoint/api/users/0'),
-
-  // get github user
-  mapToGet((user) => ({ url: `https://api.github.com/users/${user.name}` })),
-
-  // show the avatar
+  httpGet('https://my-endpoint/api/users/0'),
+  mapToHttpGet((user) => ({ url: `https://api.github.com/users/${user.name}` })),
   map((githubUser) => {
     let img = document.createElement('img');
     img.src = githubUser.avatar_url;
@@ -54,11 +48,7 @@ const displayAvatar = sequence([
 
     return [img, githubUser];
   }),
-  
-  // wait 3 seconds
   wait(3000),
-
-  // stop showing avatar
   map(([img, githubUser]) => {
     img.remove();
     return githubUser;

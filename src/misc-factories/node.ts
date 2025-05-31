@@ -8,6 +8,9 @@ import {
 } from "../parseq-utilities/parseq-utilities-type-checking.ts";
 import { Cancellor } from "../types.d.ts";
 
+/**
+ * Used to adapt nodejs-style APIs into requestors.
+ */
 export const node = <M, T>(
   takesNodeStyleCallback: (
     nodeStyleCallback: (error: unknown, data: any) => void,

@@ -9,6 +9,9 @@ import { requestor } from "../parseq-utilities/requestor.ts";
 
 const ASSERT = "assert";
 
+/**
+ * Creates requestor that only succeed if given messages that pass an assertion.
+ */
 export const assert = <M>(
   condition: (message: M) => boolean,
   description?: string,

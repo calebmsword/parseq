@@ -19,6 +19,11 @@ export type SequenceSpec = {
   safeRecursionMode?: boolean;
 };
 
+/**
+ * Performs the given requestors one after another.
+ * The value of a successful requestor is given as the message to the next.
+ * Failure occurs if any requestor fails.
+ */
 export const sequence = <Requestors extends Requestor<any, any>[]>(
   requestors: AsSequenceable<Requestors>,
   spec?: SequenceSpec,

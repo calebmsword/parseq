@@ -10,6 +10,11 @@ const defaultGetCancellor = (abort: (reason?: unknown) => void) => {
   };
 };
 
+/**
+ * Adapts a promise-returning function into a requestor.
+ * The promise-returning function may be given a signal in which case a
+ * cancellor is returned.
+ */
 export const promise = <M, T>(
   getPromise: (message?: M, signal?: AbortSignal) => Promise<T>,
   spec?: {

@@ -72,19 +72,26 @@ export class Requestor<M, V> {
       };
     }
 
-    return this.#crockfordRequestor(
+    let id: number;
+    const cancellor = this.#crockfordRequestor(
       (result) => {
-        runOnFutureTick
-          ? scheduler.schedule(
-            receiver as (...args: any) => void,
-            0,
-            result,
-          )
-          : (receiver as Receiver<V>)(result);
-        return;
+        if (runOnFutureTick) {
+          id = scheduler.schedule(receiver as Receiver<V>, 0, result);
+          return;
+        }
+        (receiver as Receiver<V>)(result);
       },
       message as M,
     );
+
+    return (reason?: any) => {
+      if (id !== undefined) {
+        scheduler.unschedule(id);
+      }
+      if (typeof cancellor === "function") {
+        cancellor(reason);
+      }
+    };
   }
 }
 

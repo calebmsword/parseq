@@ -11,6 +11,10 @@ import { Requestor } from "../types.d.ts";
 
 const BRANCH = "branch";
 
+/**
+ * Creates a requestor that runs one of two requestors based on the message 
+ * iven to it.
+ */
 export const branch = <M, T, F = T>(
   condition: (message: M) => boolean,
   ifTrue: Requestor<M, T>,

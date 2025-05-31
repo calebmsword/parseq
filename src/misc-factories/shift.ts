@@ -2,7 +2,11 @@ import { First } from "../crockford-factories/crockford-factories-utils/crockfor
 import { requestor } from "../parseq-utilities/requestor.ts";
 import { Shift } from "./misc-factories-utils/misc-factories-types.ts";
 
-export const shift = <M>(observer?: (popped: First<M, unknown>) => void) => {
+/**
+ * Removes the last element of the tuple message and returns the result.
+ * Optionally may be given a side effect to run on the popped value.
+ */
+export const shift = <M>(sideEffeect?: (popped: First<M, unknown>) => void) => {
   return requestor<M, Shift<M>>((pass, _fail, message) => {
     if (!Array.isArray(message)) {
       pass(undefined as Shift<M>);
@@ -11,8 +15,8 @@ export const shift = <M>(observer?: (popped: First<M, unknown>) => void) => {
 
     const clone = message.slice();
     const popped = clone.shift();
-    if (typeof observer === "function") {
-      observer(popped);
+    if (typeof sideEffeect === "function") {
+      sideEffeect(popped);
     }
 
     pass(clone as Shift<M>);

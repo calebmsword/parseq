@@ -1,9 +1,9 @@
 import parseq from "./src/index.js";
 import MockXMLHttpRequest from "./src/http-factories/http-factories-utils/xml-http-request-mock.ts";
-import { get$, mapToGet$ } from "./src/http-factories/get.ts";
+import { httpGet, mapToHttpGet } from "./src/http-factories/get.ts";
 import { map } from "./src/misc-factories/map.ts";
-import { observe } from "./src/misc-factories/observer.ts";
-import { post$ } from "./src/http-factories/post.ts";
+import { observe } from "./src/misc-factories/observe.ts";
+import { httpPost } from "./src/http-factories/post.ts";
 import { thru } from "./src/misc-factories/thru.ts";
 import { all } from "./src/control-flow-factories/all.ts";
 import { loop } from "./src/control-flow-factories/loop.ts";
@@ -34,30 +34,30 @@ const _count = 141;
 
 const { sequence } = parseq;
 
-const getCoffeesParseq = sequence([
-  all([
-    thru(),
-    get$("https://api.sampleapis.com/coffee/hot"),
-  ]),
-  map(([count, response]) => {
-    const firstCoffee = response.data[0];
-    return {
-      id: firstCoffee.id + count,
-      title: firstCoffee.title + " Premium",
-      price: 1.25 * firstCoffee.price,
-      description: firstCoffee.description +
-        " Being the premium version, this costs extra.",
-      image: firstCoffee.image,
-      ingredients: firstCoffee.ingredients,
-      totalSales: 0,
-    };
-  }),
-  post$("https://api.sampleapis.com/coffee/hot"),
-  observe((value) => console.log(value)),
+// const getCoffeesParseq = sequence([
+//   all([
+//     thru(),
+//     httpGet("https://api.sampleapis.com/coffee/hot"),
+//   ]),
+//   map(([count, response]) => {
+//     const firstCoffee = response.data[0];
+//     return {
+//       id: firstCoffee.id + count,
+//       title: firstCoffee.title + " Premium",
+//       price: 1.25 * firstCoffee.price,
+//       description: firstCoffee.description +
+//         " Being the premium version, this costs extra.",
+//       image: firstCoffee.image,
+//       ingredients: firstCoffee.ingredients,
+//       totalSales: 0,
+//     };
+//   }),
+//   httpPost("https://api.sampleapis.com/coffee/hot"),
+//   observe((value) => console.log(value)),
 
-  map((response) => ({ pathname: String(response.data.id) })),
-  mapToGet$("https://api.sampleapis.com/coffee/hot"),
-]);
+//   map((response) => ({ pathname: String(response.data.id) })),
+//   mapToHttpGet("https://api.sampleapis.com/coffee/hot"),
+// ]);
 
 // let count = 0;
 
@@ -95,7 +95,7 @@ const counter = container(0);
 
 repeat(
   sequence([
-    get$<Coffee>("https://api.sampleapis.com/coffee/hot"),
+    httpGet<Coffee>("https://api.sampleapis.com/coffee/hot"),
     pair<Coffee, number>(counter.update((count) => {
       return count + 1;
     })),
@@ -140,7 +140,7 @@ repeat(
     }),
     first<Coffee>(),
     assert<Coffee>(
-      (coffee) => !exists(coffee?.error),
+      (coffee) => !exists((coffee as any).error),
       "response.data must not describe an error",
     ),
     pop<Coffee>(),

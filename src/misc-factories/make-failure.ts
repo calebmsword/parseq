@@ -4,6 +4,7 @@ import { requestor } from "../parseq-utilities/requestor.ts";
 
 const MAKE_FAILURE = "makeFailure";
 
+/** Creates a failure based on the given message. */
 export const makeFailure = <M>(createReason: (message: M) => any) => {
   if (!isCallable(createReason)) {
     throw makeReason(

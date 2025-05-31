@@ -14,6 +14,10 @@ export type FallbackSpec = {
   safeRecursionMode: boolean;
 };
 
+/**
+ * Executes the given requestors in order until one succeeds.
+ * Failure occurs only if all requestors fail.
+ */
 export const fallback = <Requestors>(
   requestors: AsSameMessages<
     Requestors,

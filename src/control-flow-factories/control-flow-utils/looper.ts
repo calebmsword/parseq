@@ -21,7 +21,7 @@ export type LooperSpec<M, V> = {
   factoryName: string;
   maxAttempts?: number;
   until?: (value: V) => boolean;
-  safeRecursionMode?: boolean;
+  eachTryOnNewTick?: boolean;
   scheduler?: Scheduler;
 };
 
@@ -29,7 +29,7 @@ export const looper = <M, V>(spec: LooperSpec<M, V>) => {
   let {
     until,
     requestor,
-    safeRecursionMode,
+    eachTryOnNewTick,
     scheduler,
     maxAttempts,
     propogateOnRepeat,
@@ -89,7 +89,7 @@ export const looper = <M, V>(spec: LooperSpec<M, V>) => {
       let cancellor: Cancellor | void;
 
       cancellor = requestor.run({
-        runOnFutureTick: false,
+        runOnFutureTick: eachTryOnNewTick,
         message,
         receiver({ value, reason }) {
           cancellor = undefined;
@@ -136,24 +136,12 @@ export const looper = <M, V>(spec: LooperSpec<M, V>) => {
             }
           }
 
-          const tryAgain = () => {
-            cancellor = attempt(
-              pass,
-              fail,
-              propogateOnRepeat ? value as V : message,
-            );
-            return;
-          };
-
-          if (!safeRecursionMode) {
-            tryAgain();
-            return;
-          }
-
-          const id = scheduler.schedule(tryAgain, 0);
-          cancellor = () => {
-            scheduler.unschedule(id);
-          };
+          cancellor = attempt(
+            pass,
+            fail,
+            propogateOnRepeat ? value as V : message,
+          );
+          return;
         },
       });
 

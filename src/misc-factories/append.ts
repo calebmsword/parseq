@@ -6,6 +6,9 @@ import { Pop } from "./misc-factories-utils/misc-factories-types.ts";
 import { thru } from "./thru.ts";
 import { Requestor } from "../types.d.ts";
 
+/**
+ * Appends the given tuple message with the value of the given requestor.
+ */
 export const append = <Values extends any[]>(
   requestor: Requestor<Pop<Values>, Last<Values>>,
 ) => {

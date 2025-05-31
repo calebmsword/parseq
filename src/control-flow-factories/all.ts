@@ -28,13 +28,9 @@ export type AllSpec = {
 
 /**
  * Takes an array of requestors and succeeds if every requestor succeeds.
- * On success, the value is a read-only array of every successful value. On
- * failure, the reason is an error object whose cause is an array of every
- * reason.
- * This is implemented as a wrapper around parseq.parallel.
- * @param {*} necesseties
- * @param {*} [spec]
- * @returns
+ * On success, the value is an array of every successful value ordered in
+ * accordance to the order of the given requestors. On failure, the reason is an
+ * error object whose cause is an array of every reason.
  */
 export const all = <Requestors>(
   necesseties: AllHaveSameMessages<Requestors>,
