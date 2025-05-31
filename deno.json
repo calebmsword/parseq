@@ -3,7 +3,7 @@
     "test": "deno test --allow-read --allow-write",
     "test-update": "deno test --allow-read --allow-write -- --update",
     "test-update-files": "deno run --allow-read --allow-write scripts/delete-regexp-dot-js.ts && deno run test",
-    "example": "deno run --no-check --allow-net test.ts",
+    "example": "deno run --no-check --allow-net example.ts",
     "check": "deno check src/**/*.ts"
   },
   "imports": {
@@ -11,7 +11,7 @@
     "@std/expect": "jsr:@std/expect@^1.0.16",
     "@std/fs": "jsr:@std/fs@^1.0.17",
     "@std/path": "jsr:@std/path@^1.0.9",
-    "@std/testing": "jsr:@std/testing@^1.0.12"
+    "@std/testing": "jsr:@std/testing@^1.0.13"
   },
   "compilerOptions": {
     "types": [

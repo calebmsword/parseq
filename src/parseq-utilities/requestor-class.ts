@@ -12,8 +12,6 @@ export type CrockfordRequestor<M, V> = (
   message: M,
 ) => Cancellor | void;
 
-export const CROCKFORD_REQUESTOR = Symbol("CROCKFORD_REQUESTOR");
-
 export class Requestor<M, V> {
   #crockfordRequestor: CrockfordRequestor<M, V>;
 
@@ -73,16 +71,13 @@ export class Requestor<M, V> {
     }
 
     let id: number;
-    const cancellor = this.#crockfordRequestor(
-      (result) => {
-        if (runOnFutureTick) {
-          id = scheduler.schedule(receiver as Receiver<V>, 0, result);
-          return;
-        }
-        (receiver as Receiver<V>)(result);
-      },
-      message as M,
-    );
+    const cancellor = this.#crockfordRequestor((result) => {
+      if (runOnFutureTick) {
+        id = scheduler.schedule(receiver as Receiver<V>, 0, result);
+        return;
+      }
+      (receiver as Receiver<V>)(result);
+    }, message as M);
 
     return (reason?: any) => {
       if (id !== undefined) {

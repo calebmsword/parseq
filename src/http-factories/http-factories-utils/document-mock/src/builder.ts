@@ -17,6 +17,15 @@ export type Locator = {
 
 export class ErrorLevel {}
 
+const abstractMethod = (
+  abstractClass: new (...args: any[]) => any,
+  methodName: string,
+) => {
+  throw new Error(
+    `${abstractClass.name}.${methodName} is an abstract method. It must overridden to be called.`,
+  );
+};
+
 /** Converts XML elements into some sort of storage. */
 export class Builder {
   readonly mimeType: typeof MIME_TYPE[keyof typeof MIME_TYPE] =
@@ -48,45 +57,71 @@ export class Builder {
     }
   }
 
-  startDocument() {}
+  startDocument() {
+    abstractMethod(Builder, this.startDocument.name);
+  }
 
-  endDocument() {}
+  endDocument() {
+    abstractMethod(Builder, this.endDocument.name);
+  }
 
-  characters(xt: string, start: number, end: number) {}
+  characters(xt: string, start: number, end: number) {
+    abstractMethod(Builder, this.characters.name);
+  }
 
   comment(
     comment: string,
     commentStartLength: number,
     commentContentLength: number,
-  ) {}
+  ) {
+    abstractMethod(Builder, this.comment.name);
+  }
 
   startElement(
     ns: string,
     localName: string,
     tagName: string,
     el: ElementAttributes,
-  ) {}
+  ) {
+    abstractMethod(Builder, this.startElement.name);
+  }
 
-  endElement(uri: string, localName: string, currentTagName: string) {}
+  endElement(uri: string, localName: string, currentTagName: string) {
+    abstractMethod(Builder, this.endElement.name);
+  }
 
-  startCDATA() {}
+  startCDATA() {
+    abstractMethod(Builder, this.startCDATA.name);
+  }
 
-  endCDATA() {}
+  endCDATA() {
+    abstractMethod(Builder, this.endCDATA.name);
+  }
 
   startDTD(
     name: string,
     publicId: string | null | undefined,
     systemId: string | null | undefined,
     internalSubset: string | null | undefined,
-  ) {}
+  ) {
+    abstractMethod(Builder, this.startDTD.name);
+  }
 
-  endDTD() {}
+  endDTD() {
+    abstractMethod(Builder, this.endDTD.name);
+  }
 
-  startPrefixMapping(prefix: string, value: string) {}
+  startPrefixMapping(prefix: string, value: string) {
+    abstractMethod(Builder, this.startPrefixMapping.name);
+  }
 
-  endPrefixMapping(prefix: string) {}
+  endPrefixMapping(prefix: string) {
+    abstractMethod(Builder, this.endPrefixMapping.name);
+  }
 
-  processingInstruction(target: string, data: string) {}
+  processingInstruction(target: string, data: string) {
+    abstractMethod(Builder, this.processingInstruction.name);
+  }
 }
 
 /** A Builder which stores XML in a DOM representation. */

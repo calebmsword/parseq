@@ -758,7 +758,7 @@ describe("QNAME", () => {
 
   each(
     QNAME_START_CHARS,
-    "should match a signle NCNameStartChar %u{}",
+    "should match a single NCNameStartChar %u{}",
     (qnameStartChars) => () => {
       expectMatch(QNAME, qnameStartChars);
     },

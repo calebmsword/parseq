@@ -64,6 +64,8 @@ class ParseUtils {
       blanks++;
       this.skip();
     }
+
+    return -1;
   }
 
   substringFromIndex() {
@@ -273,7 +275,7 @@ export const parseDoctypeCommentOrCData = (
 
     parseUtils.skip(DOCTYPE_DECL_START.length);
 
-    if (parseUtils.skipBlanks() || 0 < 1) {
+    if (parseUtils.skipBlanks() < 1) {
       errorHandler.fatalError(
         `Expected whitespace after ${DOCTYPE_DECL_START} at position ${parseUtils.index}`,
       );
@@ -329,7 +331,7 @@ export const parseDoctypeCommentOrCData = (
       parseUtils.skip(match[0].length);
     } else if (isHTML && parseUtils.substringStartsWith(SYSTEM, false)) {
       parseUtils.skip(SYSTEM.length);
-      if (parseUtils.skipBlanks() || 0 < 1) {
+      if (parseUtils.skipBlanks() < 1) {
         errorHandler.fatalError(
           `Expected whitespace after ${SYSTEM} at position ${parseUtils.index}`,
         );
