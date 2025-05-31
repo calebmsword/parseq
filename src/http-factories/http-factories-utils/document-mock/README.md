@@ -4,7 +4,7 @@ A reimplementation of `@xmldom/xmldom`. See https://www.npmjs.com/package/@xmldo
 
 # Acknowledgments:
 
-It would be irresponsible not to credit the contributors for the `@xmldom/xmldom` project. Here is the list of contributors I could find. If you are aware of anyone I am missing, please let me know:
+It would be dishonest of me to take credit for work that should be mostly credited the contributors for the `@xmldom/xmldom` project. Here is the list of contributors I could find. If you are aware of anyone I am missing, please let me know:
 
  - [karfau](https://github.com/karfau)
  - [jindw](https://github.com/jindw)
