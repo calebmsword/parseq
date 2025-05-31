@@ -80,7 +80,7 @@ src/
   entities.ts
 
   // contains ponyfills for DOM Error subclasses. Deno has DOMException built-in
-  // to its environment, so the DOMException ponyfill is not implemented in this
+  // to its environment so a DOMException ponyfill is not implemented in this
   // project.
   errors.ts
 

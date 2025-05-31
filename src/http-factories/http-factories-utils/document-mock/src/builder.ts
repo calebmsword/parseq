@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 import { MIME_TYPE } from "./conventions.ts";
 import { ElementAttributes } from "./reader/reader-utils.ts";
 

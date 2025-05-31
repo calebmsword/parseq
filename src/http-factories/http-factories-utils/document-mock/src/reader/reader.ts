@@ -265,8 +265,8 @@ const parseInternal = (
   const entityReplacer = getEntityReplacer(isHtml, errorHandler, entityMap);
   const unclosedTags: string[] = [];
 
+  // -- stateful variables
   let start = 0;
-
   let lineStart = 0;
   let lineEnd = 0;
   let end = -1;
@@ -323,16 +323,21 @@ const parseInternal = (
  * converting what is read into some sort of storage.
  */
 export class XMLReader {
-  builder: Builder | null = null;
+  builder: Builder;
 
-  errorHandler: ErrorHandler | undefined;
+  errorHandler: ErrorHandler;
+
+  constructor(builder: Builder, errorHandler: ErrorHandler) {
+    this.builder = builder;
+    this.errorHandler = errorHandler;
+  }
 
   parse(
     source: string,
     defaultNSMap: { [key: string]: string },
     entityMap: { [key: string]: string },
   ) {
-    const builder = this.builder as Builder;
+    const builder = this.builder;
     builder.startDocument();
     const defaultNSMapCopy = copy(defaultNSMap, Object.create(null));
     parseInternal(
@@ -340,7 +345,7 @@ export class XMLReader {
       defaultNSMapCopy,
       entityMap,
       builder,
-      this.errorHandler as ErrorHandler,
+      this.errorHandler,
     );
     builder.endDocument();
   }

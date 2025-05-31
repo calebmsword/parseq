@@ -136,10 +136,17 @@ export const fixedFromCharCode = (code: number) => {
  * @param targetIndex -
  * An index representing the target character (the nth character in the source
  * string)
- * @param source
- * @param lineStart
- * @param lineEnd
- * @param locator
+ * @param source -
+ * The XML source to parse.
+ * @param lineStart -
+ * The pointer representing the start of a text block. A new lineStart value
+ * will be returned by this function.
+ * @param lineEnd -
+ * The pointer representing the end of a text block. A new lineEnd value will be
+ * returned by this function.
+ * @param locator -
+ * The Locator object used by the Builder to keep track of line and column
+ * numbers.
  * @returns {[number, number]}
  * the new lineStart, lineEnd as a tuple
  */

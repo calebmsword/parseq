@@ -142,7 +142,7 @@ const parsePI = (parseUtils: ParseUtils, errorHandler: ErrorHandler) => {
   return match[0];
 };
 
-export const parseDoctypeInternalSubset = (
+const parseDoctypeInternalSubset = (
   parseUtils: ParseUtils,
   errorHandler: ErrorHandler,
 ) => {
