@@ -1,4 +1,4 @@
-import { NAMESPACE } from "../conventions.ts";
+import { copy, NAMESPACE } from "../conventions.ts";
 import { Builder, Locator } from "../builder.ts";
 import { QNAME_EXACT, REFERENCE } from "../grammar.ts";
 
@@ -90,20 +90,6 @@ export type ElementAttributesLike = {
 // -----------------------------------------------------------------------------
 //  functions
 // -----------------------------------------------------------------------------
-/** Shallow copies enumerable string properties from source to target. */
-export const copy = (
-  source: { [key: string]: any },
-  target: { [key: string]: any },
-) => {
-  Object.keys(source).forEach((key) => {
-    if (Object.hasOwn(source, key)) {
-      target[key] = source[key];
-    }
-  });
-
-  return target;
-};
-
 /**
  * Converts the code into the corresponding unicode character.
  * If code is larger than 16 bits, it will be automatically converted into its

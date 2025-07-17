@@ -77,6 +77,14 @@ export const getCombiner = (
   };
 
   return (...regexps: (RegExp | string)[]) => {
+    if (regexps.some((x) => !(x instanceof RegExp) && typeof x !== "string")) {
+      throw new Error("every argument must be a string or RegExp instance");
+    }
+
+    if (regexps.length === 0) {
+      throw new Error("no parameters provided");
+    }
+
     if (typeof beforeCombine === "function") {
       beforeCombine(regexps);
     }
@@ -120,8 +128,53 @@ export const combine = getCombiner(undefined, (regexp) => {
  * ```
  */
 export const group = getCombiner((regexps) => {
-  if (regexps.length === 0) {
-    throw new Error("no parameters provided");
+  regexps.unshift("(?:");
+  regexps.push(")");
+}, undefined);
+
+/**
+ * Combines regular expressions into a single regular expression that uses a
+ * non-capturing group with each entry separated by a `|`.
+ *
+ * @example
+ * ```
+ * const piped = pipe(/abc/, "123");
+ * expect(piped instanceof RegExp).toBe(true);
+ * expect(grouped.source).toEqual("(?:abc|123)");
+ * ```
+ */
+export const pipe = getCombiner((regexps) => {
+  /*
+    ['a', 'b', 'c', 'd'] ->
+    ['a', 'b', 'c', 'd', '|', '|', '|']
+  */
+  const NUMBER_OF_REGEXPS = regexps.length;
+  for (let i = 0; i < NUMBER_OF_REGEXPS - 1; i++) {
+    regexps.push("|");
+  }
+
+  /*
+  only some `|` are in the wrong index, only swap `|`s in wrong index
+
+  1) swap last original element with last `|` out-of-place
+    ['a', 'b', 'c', 'd', '|', '|', '|'] ->
+    ['a', 'b', 'c', '|', '|', '|', 'd']
+
+  2) swap second-to-last original element with last `|` out-of-place
+    ['a', 'b', 'c', '|', '|', '|', 'd'] ->
+    ['a', 'b', '|', '|', 'c', '|', 'd']
+
+  3) swap third-to-last original element with last `|` out-of-place
+    ['a', 'b', '|', '|', 'c', '|', 'd'] ->
+    ['a', '|', 'b', '|', 'c', '|', 'd']
+
+  4) done.
+  */
+  const NUMBER_OF_REGEXPS_AND_PIPES = regexps.length;
+  for (let n = 0; n < NUMBER_OF_REGEXPS - 1; n++) {
+    const i = NUMBER_OF_REGEXPS - 1 - n; // index of nth-to-last original element
+    const j = NUMBER_OF_REGEXPS_AND_PIPES - 1 - 2 * n; // index of out-of-place `|`
+    [regexps[i], regexps[j]] = [regexps[j], regexps[i]];
   }
 
   regexps.unshift("(?:");
@@ -253,7 +306,7 @@ export const ENTITY_REF = combine("&", NAME, ";");
  */
 export const CHAR_REF = group(/&#[0-9]+;|&#x[0-9a-fA-F]+;/);
 
-export const REFERENCE = group(ENTITY_REF, "|", CHAR_REF);
+export const REFERENCE = pipe(ENTITY_REF, CHAR_REF);
 
 /**
  * "Parameter-Entity references".
@@ -270,17 +323,16 @@ export const PE_REFERENCE = combine("%", NAME, ";");
  *
  * @see https://www.w3.org/TR/xml11/#NT-EntityValue
  */
-export const ENTITY_VALUE = group(
+export const ENTITY_VALUE = pipe(
   combine(
     '"',
-    group(/[^%&"]/, "|", PE_REFERENCE, "|", REFERENCE),
+    pipe(/[^%&"]/, PE_REFERENCE, REFERENCE),
     "*",
     '"',
   ),
-  "|",
   combine(
     "'",
-    group(/[^%&']/, "|", PE_REFERENCE, "|", REFERENCE),
+    pipe(/[^%&']/, PE_REFERENCE, REFERENCE),
     "*",
     "'",
   ),
@@ -293,12 +345,12 @@ export const ENTITY_VALUE = group(
  */
 export const ATT_VALUE = group(
   '"',
-  group(/[^<&"]/, "|", REFERENCE),
+  pipe(/[^<&"]/, REFERENCE),
   "*",
   '"',
   "|",
   "'",
-  group(/[^<&']/, "|", REFERENCE),
+  pipe(/[^<&']/, REFERENCE),
   "*",
   "'",
 );
@@ -409,9 +461,8 @@ export const COMMENT_END = "-->";
  */
 export const COMMENT = combine(
   COMMENT_START,
-  group(
+  pipe(
     charsWithout(CHAR, "-"),
-    "|",
     combine("-", charsWithout(CHAR, "-")),
   ),
   "*",
@@ -427,7 +478,7 @@ const PCDATA = "#PCDATA";
  * @see https://www.w3.org/TR/xml11/#NT-Mixed
  * @see  https://www.w3.org/TR/xml-names/#NT-Mixed
  */
-export const MIXED = group(
+export const MIXED = pipe(
   combine(
     /\(/,
     S_OPT,
@@ -437,7 +488,6 @@ export const MIXED = group(
     S_OPT,
     /\)\*/,
   ),
-  "|",
   combine(/\(/, S_OPT, PCDATA, S_OPT, /\)/),
 );
 
@@ -459,13 +509,10 @@ export const CHILDREN = combine(
  *
  * @see https://www.w3.org/TR/xml11/#NT-contentspec
  */
-export const CONTENT_SPEC = group(
+export const CONTENT_SPEC = pipe(
   "EMPTY",
-  "|",
   "ANY",
-  "|",
   MIXED,
-  "|",
   CHILDREN,
 );
 
@@ -485,9 +532,9 @@ const ELEMENTDECL_START = "<!ELEMENT";
 export const ELEMENT_DECL = combine(
   ELEMENTDECL_START,
   S,
-  group(QNAME, "|", PE_REFERENCE),
+  pipe(QNAME, PE_REFERENCE),
   S,
-  group(CONTENT_SPEC, "|", PE_REFERENCE),
+  pipe(CONTENT_SPEC, PE_REFERENCE),
   S_OPT,
   ">",
 );
@@ -533,9 +580,8 @@ export const ENUMERATION = combine(
  *
  * @see https://www.w3.org/TR/xml11/#NT-EnumeratedType
  */
-export const ENUMERATED_TYPE = group(
+export const ENUMERATED_TYPE = pipe(
   NOTATION_TYPE,
-  "|",
   ENUMERATION,
 );
 
@@ -552,9 +598,8 @@ export const ENUMERATED_TYPE = group(
  *  [54] AttType ::= StringType | TokenizedType | EnumeratedType
  * ```
  */
-export const ATT_TYPE = group(
+export const ATT_TYPE = pipe(
   /CDATA|ID|IDREF|IDREFS|ENTITY|ENTITIES|NMTOKEN|NMTOKENS/,
-  "|",
   ENUMERATED_TYPE,
 );
 
@@ -564,9 +609,8 @@ export const ATT_TYPE = group(
  *
  * `[60] DefaultDecl ::= '#REQUIRED' | '#IMPLIED' | (('#FIXED' S)? AttValue)`
  */
-export const DEFAULT_DECL = group(
+export const DEFAULT_DECL = pipe(
   /#REQUIRED|#IMPLIED/,
-  "|",
   group(group("#FIXED", S), "?", ATT_VALUE),
 );
 
@@ -620,10 +664,9 @@ export const ATTLIST_DECL = combine(
 /** @see https://html.spec.whatwg.org/multipage/urls-and-fetching.html#about:legacy-compat */
 export const ABOUT_LEGACY_COMPAT = "about:legacy-compat";
 
-export const ABOUT_LEGACY_COMPAT_SystemLiteral = group(
-  '"' + ABOUT_LEGACY_COMPAT + '"',
-  "|",
-  "'" + ABOUT_LEGACY_COMPAT + "'",
+export const ABOUT_LEGACY_COMPAT_SystemLiteral = pipe(
+  `"${ABOUT_LEGACY_COMPAT}"`,
+  `'${ABOUT_LEGACY_COMPAT}'`,
 );
 
 export const SYSTEM = "SYSTEM";
@@ -632,15 +675,14 @@ export const PUBLIC = "PUBLIC";
  * `[75] ExternalID ::= 'SYSTEM' S SystemLiteral | 'PUBLIC' S PubidLiteral S SystemLiteral`
  * @see https://www.w3.org/TR/xml11/#NT-ExternalID
  */
-export const EXTERNAL_ID = group(
+export const EXTERNAL_ID = pipe(
   group(SYSTEM, S, SYSTEM_LITERAL),
-  "|",
   group(PUBLIC, S, PUBID_LITERAL, S, SYSTEM_LITERAL),
 );
 
 export const EXTERNAL_ID_match = combine(
   "^",
-  group(
+  pipe(
     group(
       SYSTEM,
       S,
@@ -648,7 +690,6 @@ export const EXTERNAL_ID_match = combine(
       SYSTEM_LITERAL,
       ")",
     ),
-    "|",
     group(
       PUBLIC,
       S,
@@ -675,9 +716,8 @@ export const N_DATA_DECL = group(S, "NDATA", S, NAME);
  *
  * @see https://www.w3.org/TR/xml11/#NT-EntityDef
  */
-export const ENTITY_DEF = group(
+export const ENTITY_DEF = pipe(
   ENTITY_VALUE,
-  "|",
   group(EXTERNAL_ID, N_DATA_DECL, "?"),
 );
 
@@ -702,7 +742,7 @@ export const GE_DECL = combine(
  *
  * @see https://www.w3.org/TR/xml11/#NT-PEDef
  */
-export const PE_DEF = group(ENTITY_VALUE, "|", EXTERNAL_ID);
+export const PE_DEF = pipe(ENTITY_VALUE, EXTERNAL_ID);
 
 /**
  * `[72] PEDecl ::= '<!ENTITY' S '%' S Name S PEDef S? '>'`
@@ -726,7 +766,7 @@ export const PE_DECL = combine(
  *
  * @see https://www.w3.org/TR/xml11/#NT-EntityDecl
  */
-export const ENTITY_DECL = group(GE_DECL, "|", PE_DECL);
+export const ENTITY_DECL = pipe(GE_DECL, PE_DECL);
 
 /**
  * `[83] PublicID    ::= 'PUBLIC' S PubidLiteral`
@@ -745,7 +785,7 @@ export const NOTATION_DECL = combine(
   S,
   NAME,
   S,
-  group(EXTERNAL_ID, "|", PUBLIC_ID),
+  pipe(EXTERNAL_ID, PUBLIC_ID),
   S_OPT,
   ">",
 );
@@ -808,11 +848,11 @@ export const SD_DECL = group(
   EQ,
   group(
     "'",
-    group("yes", "|", "no"),
+    pipe("yes", "no"),
     "'",
     "|",
     '"',
-    group("yes", "|", "no"),
+    pipe("yes", "no"),
     '"',
   ),
 );

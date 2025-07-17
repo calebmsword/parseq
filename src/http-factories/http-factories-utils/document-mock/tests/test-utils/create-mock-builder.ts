@@ -1,65 +1,87 @@
-import { Builder } from "../../src/builder.ts";
+import { Builder, Document } from "../../src/builder.ts";
 import { ElementAttributes } from "../../src/reader/reader-utils.ts";
 import { fn } from "@std/expect/fn";
 
-export class TestBuilder extends Builder {
-  startDocumentMock = fn(() => {}) as () => void;
+const GET_MOCKS = Symbol("TestBuilder[GET_MOCKS]");
 
-  endDocumentMock = fn(() => {}) as () => void;
+class TestBuilder extends Builder {
+  private startDocumentMock = fn(() => {}) as () => void;
 
-  charactersMock = fn((_xt: string, _start: number, _end: number) => {});
+  private endDocumentMock = fn(() => {}) as () => void;
 
-  commentMock = fn(
+  private charactersMock = fn(
+    (_xt: string, _start: number, _end: number) => {},
+  ) as (
+    xt: string,
+    start: number,
+    end: number,
+  ) => void;
+
+  private commentMock = fn(
     (_comment: string, _startLength: number, _contentLength: number) => {},
-  ) as (_comment: string, _startLength: number, _contentLength: number) => void;
+  ) as (comment: string, startLength: number, contentLength: number) => void;
 
-  startElementMock = fn((
+  private startElementMock = fn((
     _ns: string,
     _localName: string,
     _tagName: string,
     _el: ElementAttributes,
   ) => {}) as (
-    _ns: string,
-    _localName: string,
-    _tagName: string,
-    _el: ElementAttributes,
+    ns: string,
+    localName: string,
+    tagName: string,
+    el: ElementAttributes,
   ) => void;
 
-  endElementMock = fn(
+  private endElementMock = fn(
     (_uri: string, _localName: string, _currentTagName: string) => {},
-  ) as (_uri: string, _localName: string, _currentTagName: string) => void;
+  ) as (uri: string, localName: string, currentTagName: string) => void;
 
-  startCDATAMock = fn(() => {}) as () => void;
+  private startCDATAMock = fn(() => {}) as () => void;
 
-  endCDATAMock = fn(() => {}) as () => void;
+  private endCDATAMock = fn(() => {}) as () => void;
 
-  startDTDMock = fn((
+  private startDTDMock = fn((
     _name: string,
     _publicId: string | null | undefined,
     _systemId: string | null | undefined,
     _internalSubset: string | null | undefined,
   ) => {}) as (
-    _name: string,
-    _publicId: string | null | undefined,
-    _systemId: string | null | undefined,
-    _internalSubset: string | null | undefined,
+    name: string,
+    publicId: string | null | undefined,
+    systemId: string | null | undefined,
+    internalSubset: string | null | undefined,
   ) => void;
 
-  endDTDMock = fn(() => {}) as () => void;
+  private endDTDMock = fn(() => {}) as () => void;
 
-  startPrefixMappingMock = fn((_prefix: string, _value: string) => {}) as (
-    _prefix: string,
-    _value: string,
+  private startPrefixMappingMock = fn(
+    (_prefix: string, _value: string) => {},
+  ) as (
+    prefix: string,
+    value: string,
   ) => void;
 
-  endPrefixMappingMock = fn((_prefix: string) => {}) as (
-    _prefix: string,
+  private endPrefixMappingMock = fn((_prefix: string) => {}) as (
+    prefix: string,
   ) => void;
-  
-  processingInstructionMock = fn((_target: string, _data: string) => {}) as (
-    _target: string,
-    _data: string,
+
+  private processingInstructionMock = fn(
+    (_target: string, _data: string) => {},
+  ) as (
+    target: string,
+    data: string,
   ) => void;
+
+  constructor(haveDoc?: boolean) {
+    super();
+
+    if (haveDoc) {
+      const doc = new Document();
+      doc.documentElement = true;
+      this.doc = doc;
+    }
+  }
 
   override startDocument() {
     this.startDocumentMock();
@@ -127,7 +149,7 @@ export class TestBuilder extends Builder {
     this.processingInstructionMock(target, data);
   }
 
-  getMocks() {
+  [GET_MOCKS]() {
     return {
       startDocumentMock: this.startDocumentMock,
       endDocumentMock: this.endDocumentMock,
@@ -145,3 +167,24 @@ export class TestBuilder extends Builder {
     };
   }
 }
+
+/**
+ * @example
+ * ```
+ * // just get the builder
+ * const { builder } = getMockBuilder();
+ * ```
+ *
+ * @example
+ * ```
+ * // get mock for any builder method by destructuring with `${methodName}Mock`
+ * const { builder, startDocumentMock } = getMockBuilder();
+ */
+export const getMockBuilder = (haveDoc?: boolean) => {
+  const builder = new TestBuilder(haveDoc);
+
+  return {
+    builder,
+    ...builder[GET_MOCKS](),
+  };
+};

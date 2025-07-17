@@ -16,6 +16,20 @@ export const assign = (target: object, source: object | null | undefined) => {
   return target;
 };
 
+/** Shallow copies enumerable string properties from source to target. */
+export const copy = (
+  source: { [key: string]: any },
+  target: { [key: string]: any },
+) => {
+  Object.keys(source).forEach((key) => {
+    if (Object.hasOwn(source, key)) {
+      target[key] = source[key];
+    }
+  });
+
+  return target;
+};
+
 /**
  * A number of HTML attributes are boolean attributes.
  * The presence of a boolean attribute on an element represents the `true` value

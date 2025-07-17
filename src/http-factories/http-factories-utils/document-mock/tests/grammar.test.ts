@@ -23,6 +23,7 @@ import {
   NOTATION_DECL,
   PE_REFERENCE,
   PI,
+  pipe,
   PUBID_LITERAL,
   QNAME,
   QNAME_EXACT,
@@ -878,6 +879,21 @@ describe("PI", () => {
       expect(PI.test(value)).toBe(false);
     },
   );
+});
+
+describe("pipe", () => {
+  it("should wrap all elements in `(?:` and `)` and with `|` delimiters", () => {
+    expect(pipe(/abc/, "def")).toEqual(/(?:abc|def)/mu);
+    expect(pipe(/abc/, "def", "ghi", "klm")).toEqual(/(?:abc|def|ghi|klm)/mu);
+  });
+
+  it("should throw if no arguments are provided", () => {
+    expect(() => pipe()).toThrow(Error);
+  });
+
+  it("should throw if any argument is not RegExp instance or string", () => {
+    expect(() => pipe(/abc/, "def", {} as any)).toThrow(Error);
+  });
 });
 
 // -- regexp.js code generation helpers

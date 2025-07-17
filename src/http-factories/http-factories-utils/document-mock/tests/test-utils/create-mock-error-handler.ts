@@ -4,20 +4,20 @@ import { fn } from "@std/expect/fn";
 type Handler = (..._messages: string[]) => void;
 
 export const getMockErrorHandler = () => {
-  const warningSpy = fn((..._messages: string[]) => {}) as Handler;
-  const errorSpy = fn((..._messages: string[]) => {}) as Handler;
-  const fatalErrorSpy = fn((..._messages: string[]) => {}) as Handler;
+  const warningMock = fn((..._messages: string[]) => {}) as Handler;
+  const errorMock = fn((..._messages: string[]) => {}) as Handler;
+  const fatalErrorMock = fn((..._messages: string[]) => {}) as Handler;
 
   const errorHandler: ErrorHandler = {
-    warning: warningSpy,
-    error: errorSpy,
-    fatalError: fatalErrorSpy,
+    warning: warningMock,
+    error: errorMock,
+    fatalError: fatalErrorMock,
   };
 
   return {
     errorHandler,
-    warningSpy,
-    errorSpy,
-    fatalErrorSpy,
+    warningMock,
+    errorMock,
+    fatalErrorMock,
   };
 };

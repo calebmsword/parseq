@@ -73,11 +73,17 @@ class ParseUtils {
   }
 
   substringStartsWith(text: string, caseSensitive = true) {
+    let substring = this.#source.substring(
+      this.#index,
+      this.#index + text.length,
+    );
+
     if (!caseSensitive) {
       text = text.toLowerCase();
+      substring = substring.toLowerCase();
     }
-    return this.#source.substring(this.#index, this.#index + text.length)
-      .toLowerCase() === text;
+
+    return substring === text;
   }
 
   getMatch(args: string | RegExp) {
@@ -217,9 +223,7 @@ export const parseDoctypeCommentOrCData = (
 ) => {
   const parseUtils = getParseUtils(source, start);
 
-  const char2 = parseUtils.char(2);
-
-  const char = isHTML ? char2.toUpperCase() : char2;
+  const char = isHTML ? parseUtils.char(2).toUpperCase() : parseUtils.char(2);
 
   if (char === "-") {
     const comment = parseUtils.getMatch(COMMENT);
@@ -264,8 +268,14 @@ export const parseDoctypeCommentOrCData = (
     }
 
     if (
-      (isHTML && parseUtils.substringStartsWith(DOCTYPE_DECL_START, false)) ||
-      parseUtils.substringStartsWith(DOCTYPE_DECL_START)
+      isHTML
+        ? !parseUtils.substringStartsWith(DOCTYPE_DECL_START, false)
+        : !parseUtils.substringStartsWith(DOCTYPE_DECL_START)
+    )
+    if (
+      isHTML
+        ? !parseUtils.substringStartsWith(DOCTYPE_DECL_START, false)
+        : !parseUtils.substringStartsWith(DOCTYPE_DECL_START)
     ) {
       errorHandler.fatalError(
         `Expected ${DOCTYPE_DECL_START} at position ${parseUtils.index}`,
@@ -298,7 +308,7 @@ export const parseDoctypeCommentOrCData = (
 
     if (doctype.name === null) {
       errorHandler.fatalError(
-        `dcotype name missing or contains unexpected characters ar position ${parseUtils.index}`,
+        `doctype name missing or contains unexpected characters ar position ${parseUtils.index}`,
       );
       return;
     }
@@ -325,7 +335,7 @@ export const parseDoctypeCommentOrCData = (
         doctype.systemId = match.groups.SystemLiteralOnly;
       } else {
         doctype.systemId = match.groups?.SystemLiteral;
-        doctype.publicId = match.groups?.pubidLiteral;
+        doctype.publicId = match.groups?.PubidLiteral;
       }
 
       parseUtils.skip(match[0].length);
@@ -383,6 +393,8 @@ export const parseDoctypeCommentOrCData = (
       doctype.internalSubset,
     );
     builder.endDTD();
+
+    return parseUtils.index;
   } else {
     errorHandler.fatalError(
       `Not well-formed XML starting with "<!" at position ${start}`,

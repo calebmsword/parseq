@@ -6,5 +6,5 @@ import { expect } from "@std/expect/expect";
  * string matches that regular expression.
  */
 export const expectMatch = (regexp: RegExp, str: string) => {
-  expect((regexp.exec(str) || {})[0]).toBe(str);
+  expect((regexp.exec(str) || [])[0]).toBe(str);
 };

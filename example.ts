@@ -23,6 +23,8 @@ import { pop } from "./src/misc-factories/pop.ts";
 import { prepend } from "./src/misc-factories/prepend.ts";
 import { pair } from "./src/misc-factories/pair.ts";
 import { requestor } from "./src/parseq-utilities/requestor.ts";
+import { failure } from "./src/misc-factories/failure.ts";
+import { run } from "node:test";
 
 declare namespace globalThis {
   let XMLHttpRequest: new (...args: any[]) => any;
@@ -34,30 +36,30 @@ const _count = 141;
 
 const { sequence } = parseq;
 
-// const getCoffeesParseq = sequence([
-//   all([
-//     thru(),
-//     httpGet("https://api.sampleapis.com/coffee/hot"),
-//   ]),
-//   map(([count, response]) => {
-//     const firstCoffee = response.data[0];
-//     return {
-//       id: firstCoffee.id + count,
-//       title: firstCoffee.title + " Premium",
-//       price: 1.25 * firstCoffee.price,
-//       description: firstCoffee.description +
-//         " Being the premium version, this costs extra.",
-//       image: firstCoffee.image,
-//       ingredients: firstCoffee.ingredients,
-//       totalSales: 0,
-//     };
-//   }),
-//   httpPost("https://api.sampleapis.com/coffee/hot"),
-//   observe((value) => console.log(value)),
+const getCoffeesParseq = sequence([
+  all([
+    thru(),
+    httpGet("https://api.sampleapis.com/coffee/hot"),
+  ]),
+  map(([count, response]) => {
+    const firstCoffee = response.data[0];
+    return {
+      id: firstCoffee.id + count,
+      title: firstCoffee.title + " Premium",
+      price: 1.25 * firstCoffee.price,
+      description: firstCoffee.description +
+        " Being the premium version, this costs extra.",
+      image: firstCoffee.image,
+      ingredients: firstCoffee.ingredients,
+      totalSales: 0,
+    };
+  }),
+  httpPost("https://api.sampleapis.com/coffee/hot"),
+  observe((value) => console.log(value)),
 
-//   map((response) => ({ pathname: String(response.data.id) })),
-//   mapToHttpGet("https://api.sampleapis.com/coffee/hot"),
-// ]);
+  map((response) => ({ pathname: String(response.data.id) })),
+  mapToHttpGet("https://api.sampleapis.com/coffee/hot"),
+]);
 
 // let count = 0;
 
@@ -156,6 +158,7 @@ repeat(
     // timeLimit: 10000,
   },
 ).run({
+  message: "some input", 
   success(value) {
     console.log("success!\n", (value || [])[0]);
   },

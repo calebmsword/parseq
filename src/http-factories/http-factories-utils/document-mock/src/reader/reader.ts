@@ -1,4 +1,4 @@
-import { isHTMLMimeType, isHTMLVoidElement } from "../conventions.ts";
+import { copy, isHTMLMimeType, isHTMLVoidElement } from "../conventions.ts";
 import { Builder, Locator } from "../builder.ts";
 import { ParseError } from "../errors.ts";
 import {
@@ -10,7 +10,6 @@ import {
 import {
   appendElement,
   appendText,
-  copy,
   copyLocator,
   ElementAttributes,
   ElementAttributesLike,
